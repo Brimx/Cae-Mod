@@ -1,0 +1,69 @@
+{
+    "appearance": {
+        "transparency": {
+            "enabled": true
+        }
+    },
+    "bar": {
+        "activeWindow": {
+            "compact": true,
+            "showOnHover": true
+        },
+        "clock": {
+            "showDate": false
+        },
+        "dragThreshold": 20,
+        "persistent": false,
+        "showOnHover": true,
+        "status": {
+            "showAudio": true,
+            "showBattery": true,
+            "showKbLayout": false,
+            "showLockStatus": true,
+            "showMicrophone": false,
+            "showNetwork": true,
+            "showWifi": true
+        }
+    },
+    "border": {
+        "rounding": 0,
+        "thickness": 0
+    },
+    "general": {
+        "idle": {
+            "timeouts": [
+                {
+                    "idleAction": "lock",
+                    "timeout": 300
+                },
+                {
+                    "idleAction": "dpms off",
+                    "returnAction": "dpms on",
+                    "timeout": 330
+                },
+                {
+                    "idleAction": [
+                        "suspendThenHibernate"
+                    ],
+                    "timeout": 360
+                }
+            ]
+        }
+    },
+    "services": {
+        "audioIncrement": 0.02,
+        "brightnessIncrement": 0.02,
+        "gpuType": "GENERIC"
+    },
+    "sidebar": {
+        "enabled": true
+    },
+    "utilities": {
+        "toasts": {
+            "audioInputChanged": false,
+            "audioOutputChanged": false,
+            "capsLockChanged": true,
+            "kbLayoutChanged": false
+        }
+    }
+}
