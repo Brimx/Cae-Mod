@@ -1,12 +1,16 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import "panels" as Panels
+import "displays" as Panels
 
 ShellRoot {
     id: root
 
     property bool quickVisible: false
+
+    FontLoader {
+        source: "file:///etc/xdg/quickshell/caelestia/assets/google-sans-flex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf"
+    }
 
     Panels.DisplayQuick {
         id: quickPanel
