@@ -32,4 +32,11 @@ sudo cp $REPO_DIR/patches/keyd/default.conf /etc/keyd/default.conf
 # Quickshell widgets
 cp -r $REPO_DIR/config/quickshell/widgets/* ~/.config/quickshell/widgets/
 
+# GPU plugin fix (Intel Arc xe driver)
+echo "Do you want to build and install the GPU xe driver fix? (y/N)"
+read -l answer
+if test "$answer" = y -o "$answer" = Y
+    $REPO_DIR/scripts/build-gpu-plugin.fish
+end
+
 echo "Done."

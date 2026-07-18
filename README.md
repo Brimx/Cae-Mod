@@ -41,6 +41,7 @@ git pull
 - **KB Layout**: Switcher US/Latam con SUPER + SPACE
 - **OCR**: Screenshot + reconocimiento de texto con tesseract
 - **Intel Arc Xe2**: Variables de entorno DXVK_ASYNC y ANV_ALLOW_GPL
+- **GPU fix (xe driver)**: Utilización de GPU via fdinfo para Intel Arc B580/Battlemage (driver xe)
 - **Displays widget**: Panel Quickshell para configurar monitores
 - **Cursor**: Vimix cursors
 
