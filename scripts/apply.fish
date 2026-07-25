@@ -5,11 +5,20 @@ echo "Deploying configs..."
 
 # Hyprland
 cp $REPO_DIR/config/hypr/variables.lua ~/.config/hypr/variables.lua
-cp $REPO_DIR/config/hypr/input.lua ~/.config/hypr/hyprland/input.lua
+cp $REPO_DIR/config/hypr/animations.lua ~/.config/hypr/hyprland/animations.lua
+cp $REPO_DIR/config/hypr/decoration.lua ~/.config/hypr/hyprland/decoration.lua
 cp $REPO_DIR/config/hypr/env.lua ~/.config/hypr/hyprland/env.lua
-cp $REPO_DIR/config/hypr/keybinds.lua ~/.config/hypr/hyprland/keybinds.lua
 cp $REPO_DIR/config/hypr/execs.lua ~/.config/hypr/hyprland/execs.lua
+cp $REPO_DIR/config/hypr/general.lua ~/.config/hypr/hyprland/general.lua
+cp $REPO_DIR/config/hypr/gestures.lua ~/.config/hypr/hyprland/gestures.lua
+cp $REPO_DIR/config/hypr/group.lua ~/.config/hypr/hyprland/group.lua
+cp $REPO_DIR/config/hypr/input.lua ~/.config/hypr/hyprland/input.lua
+cp $REPO_DIR/config/hypr/keybinds.lua ~/.config/hypr/hyprland/keybinds.lua
+cp $REPO_DIR/config/hypr/misc.lua ~/.config/hypr/hyprland/misc.lua
 cp $REPO_DIR/config/hypr/monitors.lua ~/.config/hypr/hyprland/monitors.lua
+cp $REPO_DIR/config/hypr/rules.lua ~/.config/hypr/hyprland/rules.lua
+cp $REPO_DIR/config/hypr/utils/functions.lua ~/.config/hypr/utils/functions.lua
+cp $REPO_DIR/config/hypr/utils/json.lua ~/.config/hypr/utils/json.lua
 
 # Caelestia
 cp $REPO_DIR/config/caelestia/shell.json ~/.config/caelestia/shell.json
