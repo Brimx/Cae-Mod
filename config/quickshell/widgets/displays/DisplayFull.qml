@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -22,6 +24,9 @@ Item {
 
     signal closeRequested()
 
+    onSelectedIndexChanged: syncComboBoxes()
+    onMonitorsChanged: syncComboBoxes()
+
     function refreshMonitors(): void {
         fetchMonitors.running = true
     }
@@ -42,33 +47,24 @@ Item {
                 break
             }
         }
-
         for (let i = 0; i < refreshCombo.model.length; i++) {
             if (refreshCombo.model[i].value === m.selRefresh) {
                 refreshCombo.currentIndex = i
                 break
             }
         }
-
         for (let i = 0; i < scaleCombo.model.length; i++) {
             if (scaleCombo.model[i].value === m.selScale) {
                 scaleCombo.currentIndex = i
                 break
             }
         }
-
         for (let i = 0; i < posCombo.model.length; i++) {
             if (posCombo.model[i].value === m.position) {
                 posCombo.currentIndex = i
                 break
             }
         }
-    }
-
-    Connections {
-        target: root
-        function onSelectedIndexChanged() { syncComboBoxes() }
-        function onMonitorsChanged()     { syncComboBoxes() }
     }
 
     function applyChanges(): void {
@@ -86,7 +82,7 @@ Item {
 
         Quickshell.execDetached(["python"].concat(args))
 
-        statusText = "Cambios aplicados ✓"
+        statusText = qsTr("Cambios aplicados") + " ✓"
         statusTimer.restart()
         root.applying = false
     }
@@ -142,7 +138,7 @@ Item {
 
     BlobGroup {
         id: blobGroup
-        color: Colours.tPalette.m3surfaceContainer
+        color: Colours.palette.m3surfaceContainer
         smoothing: Tokens.rounding.medium
     }
 
@@ -154,20 +150,20 @@ Item {
 
     Item {
         anchors.fill: parent
+        anchors.margins: Tokens.padding.medium
         clip: true
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 18
-            spacing: 14
+            spacing: Tokens.spacing.medium
 
             // Header
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 10
+                spacing: Tokens.spacing.small
 
                 StyledText {
-                    text: "Display Configuration"
+                    text: qsTr("Display Configuration")
                     font: Tokens.font.headline.small
                     color: Colours.palette.m3onSurface
                     Layout.fillWidth: true
@@ -176,88 +172,36 @@ Item {
                 StyledText {
                     text: root.statusText
                     font: Tokens.font.label.small
-                    color: Colours.palette.m3success
+                    color: Colours.palette.m3primary
                     visible: root.statusText.length > 0
                     Layout.alignment: Qt.AlignVCenter
                 }
 
-                StyledRect {
-                    implicitWidth: 36
-                    implicitHeight: 36
-                    radius: Tokens.rounding.small
-                    color: closeSL.containsMouse ? Colours.tPalette.m3surfaceContainerHigh : "transparent"
-
-                    Behavior on color { CAnim {} }
-
-                    MaterialIcon {
-                        anchors.centerIn: parent
-                        fontStyle: Tokens.font.icon.small
-                        text: "close"
-                        color: Colours.palette.m3onSurfaceVariant
-                    }
-
-                    StateLayer {
-                        id: closeSL
-                        onClicked: root.closeRequested()
-                    }
+                HeaderButton {
+                    icon: "close"
+                    onClicked: root.closeRequested()
                 }
             }
 
             // Layout presets
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 6
+                spacing: Tokens.spacing.extraSmall
 
                 Repeater {
                     model: [
-                        { label: "Extendido", icon: "grid_view", preset: "extended" },
-                        { label: "Duplicado", icon: "content_copy", preset: "mirror" },
-                        { label: "Solo Portátil", icon: "laptop_mac", preset: "laptop-only" },
-                        { label: "Solo Externo", icon: "desktop_windows", preset: "external-only" },
+                        { label: qsTr("Extendido"), icon: "grid_view", preset: "extended" },
+                        { label: qsTr("Duplicado"), icon: "content_copy", preset: "mirror" },
+                        { label: qsTr("Solo Portátil"), icon: "laptop_mac", preset: "laptop-only" },
+                        { label: qsTr("Solo Externo"), icon: "desktop_windows", preset: "external-only" },
                     ]
 
-                    delegate: StyledRect {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 36
+                    delegate: PresetTile {
+                        required property var modelData
 
-                        property bool hovered: presetSL.containsMouse
-                        property bool pressed: presetSL.pressed
-
-                        radius: pressed ? Tokens.rounding.small : Tokens.rounding.large
-                        color: hovered ? Colours.tPalette.m3surfaceContainerHigh : Colours.tPalette.m3surfaceContainerLow
-                        border.color: pressed ? Colours.palette.m3primary : Colours.tPalette.m3outline
-                        border.width: 1
-
-                        Behavior on radius { Anim { type: Anim.DefaultEffects } }
-                        Behavior on color { CAnim {} }
-
-                        RowLayout {
-                            anchors.fill: parent
-                            anchors.leftMargin: 8
-                            anchors.rightMargin: 8
-                            spacing: 6
-
-                            MaterialIcon {
-                                fontStyle: Tokens.font.icon.small
-                                text: modelData.icon
-                                color: Colours.palette.m3primary
-                                fill: 1
-                            }
-
-                            StyledText {
-                                text: modelData.label
-                                font: Tokens.font.label.small
-                                color: Colours.palette.m3onSurface
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                                Layout.fillWidth: true
-                            }
-                        }
-
-                        StateLayer {
-                            id: presetSL
-                            onClicked: Quickshell.execDetached(["python", root.helperPath, "--preset", modelData.preset])
-                        }
+                        text: modelData.label
+                        iconText: modelData.icon
+                        onClicked: Quickshell.execDetached(["python", root.helperPath, "--preset", modelData.preset])
                     }
                 }
             }
@@ -271,7 +215,7 @@ Item {
 
             // Monitor drag area
             StyledText {
-                text: "Arrastra para reordenar monitores"
+                text: qsTr("Arrastra para reordenar monitores")
                 font: Tokens.font.label.small
                 color: Colours.palette.m3onSurfaceVariant
             }
@@ -283,7 +227,7 @@ Item {
                 RowLayout {
                     id: monitorsRow
                     anchors.centerIn: parent
-                    spacing: 14
+                    spacing: Tokens.spacing.medium
 
                     Repeater {
                         id: monitorRepeater
@@ -312,7 +256,7 @@ Item {
                             border.width: root.selectedIndex === index ? 2 : 1
 
                             Behavior on radius { Anim { type: Anim.DefaultEffects } }
-                            Behavior on color { CAnim {} }
+                            Behavior on color { Anim { type: Anim.DefaultEffects } }
 
                             DragHandler {
                                 onActiveChanged: {
@@ -342,7 +286,7 @@ Item {
 
                             ColumnLayout {
                                 anchors.centerIn: parent
-                                spacing: 3
+                                spacing: Tokens.spacing.extraSmall
 
                                 StyledText {
                                     text: modelData.name
@@ -389,7 +333,7 @@ Item {
             StyledText {
                 text: {
                     const m = root.selectedMonitor()
-                    return m ? "Monitor: " + m.name : "Selecciona un monitor"
+                    return m ? qsTr("Monitor: %1").arg(m.name) : qsTr("Selecciona un monitor")
                 }
                 font: Tokens.font.title.small
                 color: Colours.palette.m3onSurface
@@ -397,20 +341,20 @@ Item {
 
             GridLayout {
                 columns: 2
-                columnSpacing: 14
-                rowSpacing: 10
+                columnSpacing: Tokens.spacing.medium
+                rowSpacing: Tokens.spacing.small
                 Layout.fillWidth: true
 
                 enabled: root.selectedMonitor() !== null
 
                 // Resolution
                 StyledText {
-                    text: "Resolución"
+                    text: qsTr("Resolución")
                     font: Tokens.font.body.small
                     color: Colours.palette.m3onSurfaceVariant
                 }
 
-                ComboBox {
+                ComboField {
                     id: resCombo
                     Layout.fillWidth: true
                     textRole: "label"
@@ -446,42 +390,16 @@ Item {
                         m.selHeight = item.h
                         root.monitors = root.monitors.slice()
                     }
-
-                    background: StyledRect { radius: Tokens.rounding.small; color: Colours.tPalette.m3surfaceContainerLow; border.color: Colours.tPalette.m3outline; border.width: 1 }
-                    contentItem: StyledText {
-                        text: resCombo.displayText; color: Colours.palette.m3onSurface; font: Tokens.font.body.small
-                        leftPadding: 10; verticalAlignment: Text.AlignVCenter
-                    }
-                    indicator: MaterialIcon {
-                        fontStyle: Tokens.font.icon.small
-                        text: "expand_more"
-                        color: Colours.palette.m3onSurfaceVariant
-                        anchors.right: parent.right; anchors.rightMargin: 8; anchors.verticalCenter: parent.verticalCenter
-                    }
-                    delegate: ItemDelegate {
-                        width: resCombo.width
-                        contentItem: StyledText { text: model.label; color: Colours.palette.m3onSurface; font: Tokens.font.body.small; leftPadding: 10 }
-                        background: StyledRect {
-                            color: resCombo.highlightedIndex === index ? Colours.tPalette.m3surfaceContainerHigh : Colours.tPalette.m3surfaceContainerLow
-                            radius: Tokens.rounding.small
-                        }
-                    }
-                    popup: Popup {
-                        y: resCombo.height + 4; width: resCombo.width
-                        height: Math.min(220, contentItem.implicitHeight)
-                        contentItem: ListView { clip: true; model: resCombo.delegateModel; currentIndex: resCombo.highlightedIndex }
-                        background: StyledRect { color: Colours.tPalette.m3surfaceContainer; radius: Tokens.rounding.small; border.color: Colours.tPalette.m3outline }
-                    }
                 }
 
                 // Refresh rate
                 StyledText {
-                    text: "Frecuencia"
+                    text: qsTr("Frecuencia")
                     font: Tokens.font.body.small
                     color: Colours.palette.m3onSurfaceVariant
                 }
 
-                ComboBox {
+                ComboField {
                     id: refreshCombo
                     Layout.fillWidth: true
                     textRole: "label"
@@ -507,42 +425,16 @@ Item {
                         m.selRefresh = refreshCombo.model[currentIndex].value
                         root.monitors = root.monitors.slice()
                     }
-
-                    background: StyledRect { radius: Tokens.rounding.small; color: Colours.tPalette.m3surfaceContainerLow; border.color: Colours.tPalette.m3outline; border.width: 1 }
-                    contentItem: StyledText {
-                        text: refreshCombo.displayText; color: Colours.palette.m3onSurface; font: Tokens.font.body.small
-                        leftPadding: 10; verticalAlignment: Text.AlignVCenter
-                    }
-                    indicator: MaterialIcon {
-                        fontStyle: Tokens.font.icon.small
-                        text: "expand_more"
-                        color: Colours.palette.m3onSurfaceVariant
-                        anchors.right: parent.right; anchors.rightMargin: 8; anchors.verticalCenter: parent.verticalCenter
-                    }
-                    delegate: ItemDelegate {
-                        width: refreshCombo.width
-                        contentItem: StyledText { text: model.label; color: Colours.palette.m3onSurface; font: Tokens.font.body.small; leftPadding: 10 }
-                        background: StyledRect {
-                            color: refreshCombo.highlightedIndex === index ? Colours.tPalette.m3surfaceContainerHigh : Colours.tPalette.m3surfaceContainerLow
-                            radius: Tokens.rounding.small
-                        }
-                    }
-                    popup: Popup {
-                        y: refreshCombo.height + 4; width: refreshCombo.width
-                        height: Math.min(220, contentItem.implicitHeight)
-                        contentItem: ListView { clip: true; model: refreshCombo.delegateModel; currentIndex: refreshCombo.highlightedIndex }
-                        background: StyledRect { color: Colours.tPalette.m3surfaceContainer; radius: Tokens.rounding.small; border.color: Colours.tPalette.m3outline }
-                    }
                 }
 
                 // Scale
                 StyledText {
-                    text: "Escala"
+                    text: qsTr("Escala")
                     font: Tokens.font.body.small
                     color: Colours.palette.m3onSurfaceVariant
                 }
 
-                ComboBox {
+                ComboField {
                     id: scaleCombo
                     Layout.fillWidth: true
 
@@ -562,53 +454,27 @@ Item {
                         m.selScale = scaleCombo.model[currentIndex].value
                         root.monitors = root.monitors.slice()
                     }
-
-                    background: StyledRect { radius: Tokens.rounding.small; color: Colours.tPalette.m3surfaceContainerLow; border.color: Colours.tPalette.m3outline; border.width: 1 }
-                    contentItem: StyledText {
-                        text: scaleCombo.displayText; color: Colours.palette.m3onSurface; font: Tokens.font.body.small
-                        leftPadding: 10; verticalAlignment: Text.AlignVCenter
-                    }
-                    indicator: MaterialIcon {
-                        fontStyle: Tokens.font.icon.small
-                        text: "expand_more"
-                        color: Colours.palette.m3onSurfaceVariant
-                        anchors.right: parent.right; anchors.rightMargin: 8; anchors.verticalCenter: parent.verticalCenter
-                    }
-                    delegate: ItemDelegate {
-                        width: scaleCombo.width
-                        contentItem: StyledText { text: model.label; color: Colours.palette.m3onSurface; font: Tokens.font.body.small; leftPadding: 10 }
-                        background: StyledRect {
-                            color: scaleCombo.highlightedIndex === index ? Colours.tPalette.m3surfaceContainerHigh : Colours.tPalette.m3surfaceContainerLow
-                            radius: Tokens.rounding.small
-                        }
-                    }
-                    popup: Popup {
-                        y: scaleCombo.height + 4; width: scaleCombo.width
-                        height: Math.min(220, contentItem.implicitHeight)
-                        contentItem: ListView { clip: true; model: scaleCombo.delegateModel; currentIndex: scaleCombo.highlightedIndex }
-                        background: StyledRect { color: Colours.tPalette.m3surfaceContainer; radius: Tokens.rounding.small; border.color: Colours.tPalette.m3outline }
-                    }
                 }
 
                 // Position
                 StyledText {
-                    text: "Posición"
+                    text: qsTr("Posición")
                     font: Tokens.font.body.small
                     color: Colours.palette.m3onSurfaceVariant
                 }
 
-                ComboBox {
+                ComboField {
                     id: posCombo
                     Layout.fillWidth: true
 
                     model: {
                         const m = root.selectedMonitor()
                         if (!m) return []
-                        const items = [{ label: "Primario (0x0)", value: "0x0" }]
+                        const items = [{ label: qsTr("Primario (0x0)"), value: "0x0" }]
                         for (const other of root.monitors) {
                             if (other.name !== m.name && !other.disabled) {
-                                items.push({ label: "Der. de " + other.name, value: other.width + "x0" })
-                                items.push({ label: "Izq. de " + other.name, value: "-" + m.width + "x0" })
+                                items.push({ label: qsTr("Der. de %1").arg(other.name), value: other.width + "x0" })
+                                items.push({ label: qsTr("Izq. de %1").arg(other.name), value: "-" + m.width + "x0" })
                             }
                         }
                         return items
@@ -620,32 +486,6 @@ Item {
                         m.position = posCombo.model[currentIndex].value
                         root.monitors = root.monitors.slice()
                     }
-
-                    background: StyledRect { radius: Tokens.rounding.small; color: Colours.tPalette.m3surfaceContainerLow; border.color: Colours.tPalette.m3outline; border.width: 1 }
-                    contentItem: StyledText {
-                        text: posCombo.displayText; color: Colours.palette.m3onSurface; font: Tokens.font.body.small
-                        leftPadding: 10; verticalAlignment: Text.AlignVCenter
-                    }
-                    indicator: MaterialIcon {
-                        fontStyle: Tokens.font.icon.small
-                        text: "expand_more"
-                        color: Colours.palette.m3onSurfaceVariant
-                        anchors.right: parent.right; anchors.rightMargin: 8; anchors.verticalCenter: parent.verticalCenter
-                    }
-                    delegate: ItemDelegate {
-                        width: posCombo.width
-                        contentItem: StyledText { text: model.label; color: Colours.palette.m3onSurface; font: Tokens.font.body.small; leftPadding: 10 }
-                        background: StyledRect {
-                            color: posCombo.highlightedIndex === index ? Colours.tPalette.m3surfaceContainerHigh : Colours.tPalette.m3surfaceContainerLow
-                            radius: Tokens.rounding.small
-                        }
-                    }
-                    popup: Popup {
-                        y: posCombo.height + 4; width: posCombo.width
-                        height: Math.min(220, contentItem.implicitHeight)
-                        contentItem: ListView { clip: true; model: posCombo.delegateModel; currentIndex: posCombo.highlightedIndex }
-                        background: StyledRect { color: Colours.tPalette.m3surfaceContainer; radius: Tokens.rounding.small; border.color: Colours.tPalette.m3outline }
-                    }
                 }
             }
 
@@ -655,40 +495,181 @@ Item {
             // Apply button
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 10
+                spacing: Tokens.spacing.small
 
                 Item { Layout.fillWidth: true }
 
-                StyledRect {
+                ActionButton {
                     id: applyFullBtn
                     implicitWidth: 180
-                    implicitHeight: 40
-
-                    property bool hovered: applySL.containsMouse
-                    property bool pressed: applySL.pressed
-                    property bool enabled: !root.applying
-
-                    radius: pressed ? Tokens.rounding.small : Tokens.rounding.medium
-                    color: enabled ? (hovered ? Colours.palette.m3primary : Colours.palette.m3secondaryContainer) : Colours.tPalette.m3surfaceContainerLow
-
-                    Behavior on radius { Anim { type: Anim.DefaultEffects } }
-                    Behavior on color { CAnim {} }
-
-                    StyledText {
-                        anchors.centerIn: parent
-                        text: "Aplicar cambios"
-                        font: Tokens.font.label.medium
-                        color: applyFullBtn.enabled ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurfaceVariant
-                    }
-
-                    StateLayer {
-                        id: applySL
-                        color: Colours.palette.m3onSecondaryContainer
-                        disabled: !applyFullBtn.enabled
-                        onClicked: root.applyChanges()
-                    }
+                    text: qsTr("Aplicar cambios")
+                    enabled: !root.applying
+                    onClicked: root.applyChanges()
                 }
             }
+        }
+    }
+
+    component ComboField: ComboBox {
+        id: combo
+
+        background: StyledRect {
+            radius: Tokens.rounding.small
+            color: Colours.tPalette.m3surfaceContainerLow
+            border.color: Colours.tPalette.m3outline
+            border.width: 1
+        }
+
+        contentItem: StyledText {
+            text: combo.displayText
+            color: Colours.palette.m3onSurface
+            font: Tokens.font.body.small
+            leftPadding: Tokens.padding.small
+            verticalAlignment: Text.AlignVCenter
+        }
+
+        indicator: MaterialIcon {
+            fontStyle: Tokens.font.icon.small
+            text: "expand_more"
+            color: Colours.palette.m3onSurfaceVariant
+            anchors.right: parent.right
+            anchors.rightMargin: Tokens.padding.small
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        delegate: ItemDelegate {
+            width: combo.width
+            contentItem: StyledText {
+                text: model.label
+                color: Colours.palette.m3onSurface
+                font: Tokens.font.body.small
+                leftPadding: Tokens.padding.small
+            }
+            background: StyledRect {
+                color: combo.highlightedIndex === index
+                    ? Colours.tPalette.m3surfaceContainerHigh
+                    : Colours.tPalette.m3surfaceContainerLow
+                radius: Tokens.rounding.small
+            }
+        }
+
+        popup: Popup {
+            y: combo.height + Tokens.spacing.extraSmall
+            width: combo.width
+            height: Math.min(220, contentItem.implicitHeight)
+            contentItem: ListView {
+                clip: true
+                model: combo.delegateModel
+                currentIndex: combo.highlightedIndex
+            }
+            background: StyledRect {
+                color: Colours.tPalette.m3surfaceContainer
+                radius: Tokens.rounding.small
+                border.color: Colours.tPalette.m3outline
+            }
+        }
+    }
+
+    component PresetTile: StyledRect {
+        property string text
+        property string iconText
+        signal clicked()
+
+        Layout.fillWidth: true
+        Layout.preferredHeight: 36
+
+        property bool hovered: tileSL.containsMouse
+        property bool pressed: tileSL.pressed
+
+        radius: pressed ? Tokens.rounding.small : Tokens.rounding.large
+        color: hovered ? Colours.tPalette.m3surfaceContainerHigh : Colours.tPalette.m3surfaceContainerLow
+        border.color: pressed ? Colours.palette.m3primary : Colours.tPalette.m3outline
+        border.width: 1
+
+        Behavior on radius { Anim { type: Anim.DefaultEffects } }
+        Behavior on color { Anim { type: Anim.DefaultEffects } }
+
+        RowLayout {
+            anchors.fill: parent
+            anchors.leftMargin: Tokens.padding.small
+            anchors.rightMargin: Tokens.padding.small
+            spacing: Tokens.spacing.extraSmall
+
+            MaterialIcon {
+                fontStyle: Tokens.font.icon.small
+                text: iconText
+                color: Colours.palette.m3primary
+                fill: 1
+            }
+
+            StyledText {
+                text: parent.parent.text
+                font: Tokens.font.label.small
+                color: Colours.palette.m3onSurface
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                Layout.fillWidth: true
+            }
+        }
+
+        StateLayer {
+            id: tileSL
+            onClicked: parent.clicked()
+        }
+    }
+
+    component HeaderButton: StyledRect {
+        property string icon
+        signal clicked()
+
+        implicitWidth: 36
+        implicitHeight: 36
+        radius: Tokens.rounding.small
+        color: closeSL.containsMouse ? Colours.tPalette.m3surfaceContainerHigh : "transparent"
+
+        Behavior on color { Anim { type: Anim.DefaultEffects } }
+
+        MaterialIcon {
+            anchors.centerIn: parent
+            fontStyle: Tokens.font.icon.small
+            text: parent.icon
+            color: Colours.palette.m3onSurfaceVariant
+        }
+
+        StateLayer {
+            id: closeSL
+            onClicked: parent.clicked()
+        }
+    }
+
+    component ActionButton: StyledRect {
+        property string text
+        property bool enabled: true
+        signal clicked()
+
+        implicitHeight: 40
+
+        property bool hovered: btnSL.containsMouse
+        property bool pressed: btnSL.pressed
+
+        radius: pressed ? Tokens.rounding.small : Tokens.rounding.medium
+        color: enabled ? (hovered ? Colours.palette.m3primary : Colours.tPalette.m3secondaryContainer) : Colours.tPalette.m3surfaceContainerLow
+
+        Behavior on radius { Anim { type: Anim.DefaultEffects } }
+        Behavior on color { Anim { type: Anim.DefaultEffects } }
+
+        StyledText {
+            anchors.centerIn: parent
+            text: parent.text
+            font: Tokens.font.label.medium
+            color: parent.enabled ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurfaceVariant
+        }
+
+        StateLayer {
+            id: btnSL
+            color: Colours.palette.m3onSecondaryContainer
+            disabled: !parent.enabled
+            onClicked: parent.clicked()
         }
     }
 }
