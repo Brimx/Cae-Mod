@@ -26,6 +26,8 @@ cp $REPO_DIR/scripts/trackpad-edges.py ~/.local/bin/trackpad-edges.py
 # Patches (sudo)
 echo "Deploying system patches (sudo)..."
 sudo cp $REPO_DIR/patches/modules/IdleMonitors.qml /etc/xdg/quickshell/caelestia/modules/IdleMonitors.qml
+sudo cp $REPO_DIR/patches/modules/bar/popouts/BatteryConservation.qml /etc/xdg/quickshell/caelestia/modules/bar/popouts/BatteryConservation.qml
+sudo cp $REPO_DIR/patches/modules/bar/popouts/Battery.qml /etc/xdg/quickshell/caelestia/modules/bar/popouts/Battery.qml
 sudo cp $REPO_DIR/patches/sddm.conf /etc/sddm.conf
 sudo cp $REPO_DIR/patches/keyd/default.conf /etc/keyd/default.conf
 
