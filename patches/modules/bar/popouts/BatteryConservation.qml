@@ -26,13 +26,13 @@ Column {
         IconButton {
             icon: "shield"
             type: root.currentLimit === 80 ? IconButton.Filled : IconButton.Tonal
-            onClicked: set80.start()
+            onClicked: set80.running = true
         }
 
         IconButton {
             icon: "rocket_launch"
             type: root.currentLimit === 100 ? IconButton.Filled : IconButton.Tonal
-            onClicked: set100.start()
+            onClicked: set100.running = true
         }
     }
 
@@ -53,7 +53,7 @@ Column {
         command: ["asusctl", "battery", "limit", "80"]
         stdout: StdioCollector {
             onStreamFinished: {
-                readLimit.start();
+                readLimit.running = true;
                 Toaster.toast(
                     qsTr("Battery limit set"),
                     qsTr("Charge limit set to 80%"),
@@ -68,7 +68,7 @@ Column {
         command: ["asusctl", "battery", "limit", "100"]
         stdout: StdioCollector {
             onStreamFinished: {
-                readLimit.start();
+                readLimit.running = true;
                 Toaster.toast(
                     qsTr("Battery limit set"),
                     qsTr("Charge limit set to 100%"),
@@ -81,6 +81,6 @@ Column {
     Timer {
         interval: 30000
         repeat: true
-        onTriggered: readLimit.start()
+        onTriggered: readLimit.running = true
     }
 }
