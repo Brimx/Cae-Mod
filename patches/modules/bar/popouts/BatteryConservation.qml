@@ -38,6 +38,7 @@ Column {
 
     Process {
         id: readLimit
+        running: true
         command: ["asusctl", "battery", "info"]
         stdout: StdioCollector {
             onStreamFinished: {
@@ -71,6 +72,4 @@ Column {
         repeat: true
         onTriggered: readLimit.start()
     }
-
-    Component.onCompleted: readLimit.start()
 }
