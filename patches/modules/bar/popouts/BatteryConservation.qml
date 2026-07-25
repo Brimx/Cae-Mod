@@ -26,13 +26,13 @@ Column {
         IconButton {
             icon: "shield"
             type: root.currentLimit === 80 ? IconButton.Filled : IconButton.Tonal
-            onClicked: root.setLimit(80)
+            onClicked: set80.start()
         }
 
         IconButton {
             icon: "rocket_launch"
             type: root.currentLimit === 100 ? IconButton.Filled : IconButton.Tonal
-            onClicked: root.setLimit(100)
+            onClicked: set100.start()
         }
     }
 
@@ -49,22 +49,33 @@ Column {
     }
 
     Process {
-        id: setLimitProc
+        id: set80
+        command: ["asusctl", "battery", "limit", "80"]
         stdout: StdioCollector {
             onStreamFinished: {
                 readLimit.start();
                 Toaster.toast(
                     qsTr("Battery limit set"),
-                    qsTr("Charge limit set to %1%").arg(root.currentLimit),
+                    qsTr("Charge limit set to 80%"),
                     "power"
                 );
             }
         }
     }
 
-    function setLimit(limit: int) {
-        setLimitProc.command = ["asusctl", "battery", "limit", limit.toString()];
-        setLimitProc.start();
+    Process {
+        id: set100
+        command: ["asusctl", "battery", "limit", "100"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                readLimit.start();
+                Toaster.toast(
+                    qsTr("Battery limit set"),
+                    qsTr("Charge limit set to 100%"),
+                    "power"
+                );
+            }
+        }
     }
 
     Timer {
