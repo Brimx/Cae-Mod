@@ -18,21 +18,29 @@ Column {
     StyledText {
         text: qsTr("Charge limit: %1%").arg(root.currentLimit)
         font: Tokens.font.body.small
+        anchors.horizontalCenter: parent.horizontalCenter
     }
 
     Row {
         spacing: Tokens.spacing.small
+        anchors.horizontalCenter: parent.horizontalCenter
 
         IconButton {
             icon: "shield"
             type: root.currentLimit === 80 ? IconButton.Filled : IconButton.Tonal
-            onClicked: set80.running = true
+            onClicked: {
+                root.currentLimit = 80;
+                set80.running = true;
+            }
         }
 
         IconButton {
             icon: "rocket_launch"
             type: root.currentLimit === 100 ? IconButton.Filled : IconButton.Tonal
-            onClicked: set100.running = true
+            onClicked: {
+                root.currentLimit = 100;
+                set100.running = true;
+            }
         }
     }
 
@@ -43,7 +51,7 @@ Column {
         stdout: StdioCollector {
             onStreamFinished: {
                 const match = text.match(/(\d+)%/);
-                root.currentLimit = match ? parseInt(match[1]) : 100;
+                if (match) root.currentLimit = parseInt(match[1]);
             }
         }
     }
@@ -79,7 +87,7 @@ Column {
     }
 
     Timer {
-        interval: 30000
+        interval: 10000
         repeat: true
         onTriggered: readLimit.running = true
     }
