@@ -7,8 +7,6 @@ import Caelestia
 import Caelestia.Blobs
 import Caelestia.Config
 import qs.components
-import qs.utils
-import qs.services
 
 Item {
     id: root
@@ -20,11 +18,11 @@ Item {
     property real offsetScale: shouldBeActive ? 0 : 1
 
     visible: offsetScale < 1
+    width: 260
+    height: 380
     anchors.top: parent.top
     anchors.right: parent.right
-    anchors.topMargin: (-implicitHeight - 5) * offsetScale
-    implicitHeight: contentLoader.implicitHeight + Tokens.padding.large * 2
-    implicitWidth: 260
+    anchors.topMargin: (-height - 5) * offsetScale
     opacity: 1 - offsetScale
 
     Behavior on offsetScale { Anim {} }
@@ -41,46 +39,39 @@ Item {
         radius: Tokens.rounding.extraLarge
     }
 
-    Loader {
-        id: contentLoader
-
+    ColumnLayout {
         anchors.fill: parent
         anchors.margins: Tokens.padding.large
+        spacing: Tokens.spacing.medium
 
-        active: root.shouldBeActive || root.visible
+        StyledText {
+            text: qsTr("Display Layout")
+            font: Tokens.font.title.small
+            color: Colours.palette.m3onSurface
+        }
 
-        sourceComponent: ColumnLayout {
-            spacing: Tokens.spacing.medium
+        Repeater {
+            model: [
+                { label: qsTr("Extendido"),     icon: "grid_view",      preset: "extended" },
+                { label: qsTr("Duplicado"),     icon: "content_copy",   preset: "mirror" },
+                { label: qsTr("Solo Portátil"), icon: "laptop_mac",     preset: "laptop-only" },
+                { label: qsTr("Solo Externo"),  icon: "desktop_windows",preset: "external-only" },
+            ]
 
-            StyledText {
-                text: qsTr("Display Layout")
-                font: Tokens.font.title.small
-                color: Colours.palette.m3onSurface
+            delegate: PresetButton {
+                required property var modelData
+
+                text: modelData.label
+                iconText: modelData.icon
+                onClicked: Quickshell.execDetached(["python", root.helperPath, "--preset", modelData.preset])
             }
+        }
 
-            Repeater {
-                model: [
-                    { label: qsTr("Extendido"),     icon: "grid_view",      preset: "extended" },
-                    { label: qsTr("Duplicado"),     icon: "content_copy",   preset: "mirror" },
-                    { label: qsTr("Solo Portátil"), icon: "laptop_mac",     preset: "laptop-only" },
-                    { label: qsTr("Solo Externo"),  icon: "desktop_windows",preset: "external-only" },
-                ]
+        Item { Layout.fillHeight: true }
 
-                delegate: PresetButton {
-                    required property var modelData
-
-                    text: modelData.label
-                    iconText: modelData.icon
-                    onClicked: Quickshell.execDetached(["python", root.helperPath, "--preset", modelData.preset])
-                }
-            }
-
-            Item { Layout.fillHeight: true }
-
-            ActionButton {
-                text: qsTr("Configuración completa")
-                onClicked: Quickshell.execDetached(["qs", "-c", "widgets", "ipc", "call", "displays", "full"])
-            }
+        ActionButton {
+            text: qsTr("Configuración completa")
+            onClicked: Quickshell.execDetached(["qs", "-c", "widgets", "ipc", "call", "displays", "full"])
         }
     }
 
