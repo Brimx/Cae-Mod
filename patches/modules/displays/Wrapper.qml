@@ -3,8 +3,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Caelestia
-import Caelestia.Blobs
 import Caelestia.Config
 import qs.components
 
@@ -27,16 +25,10 @@ Item {
 
     Behavior on offsetScale { Anim {} }
 
-    BlobGroup {
-        id: blobGroup
-        color: Colours.palette.m3surfaceContainer
-        smoothing: Tokens.rounding.medium
-    }
-
-    BlobRect {
+    StyledRect {
         anchors.fill: parent
-        group: blobGroup
         radius: Tokens.rounding.extraLarge
+        color: Colours.tPalette.m3surfaceContainer
     }
 
     ColumnLayout {

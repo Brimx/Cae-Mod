@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import qs.services
 import "displays" as Panels
 
 ShellRoot {
@@ -36,11 +37,8 @@ ShellRoot {
 
     IpcHandler {
         function toggle(): void {
-            fullWindow.visible = !fullWindow.visible;
-            if (fullWindow.visible) {
-                fullPanel.refreshMonitors();
-                fullWindow.requestActivate();
-            }
+            const ss = ShellState.forActive();
+            ss.displays = !ss.displays;
         }
 
         function full(): void {
