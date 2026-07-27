@@ -6,19 +6,8 @@ import "displays" as Panels
 ShellRoot {
     id: root
 
-    property bool quickVisible: false
-
     FontLoader {
         source: "file:///etc/xdg/quickshell/caelestia/assets/google-sans-flex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf"
-    }
-
-    Panels.DisplayQuick {
-        id: quickPanel
-        visible: root.quickVisible
-
-        Behavior on visible {
-            NumberAnimation { duration: 100 }
-        }
     }
 
     FloatingWindow {
@@ -45,21 +34,19 @@ ShellRoot {
         }
     }
 
-    Component.onCompleted: {
-        quickPanel.fullConfigRequested.connect(function() {
-            root.quickVisible = false;
-            fullWindow.visible = true;
-            fullWindow.requestActivate();
-        });
-    }
-
     IpcHandler {
         function toggle(): void {
+            fullWindow.visible = !fullWindow.visible;
             if (fullWindow.visible) {
-                fullWindow.visible = false;
-            } else {
-                root.quickVisible = !root.quickVisible;
+                fullPanel.refreshMonitors();
+                fullWindow.requestActivate();
             }
+        }
+
+        function full(): void {
+            fullWindow.visible = true;
+            fullPanel.refreshMonitors();
+            fullWindow.requestActivate();
         }
 
         target: "displays"
