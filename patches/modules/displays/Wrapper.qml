@@ -26,45 +26,48 @@ Item {
 
     Behavior on offsetScale { Anim {} }
 
-    StyledRect {
+    StyledClippingRect {
         anchors.fill: parent
-        radius: Tokens.rounding.extraLarge
+        topLeftRadius: 0
+        topRightRadius: 0
+        bottomLeftRadius: Tokens.rounding.extraLarge
+        bottomRightRadius: Tokens.rounding.extraLarge
         color: Colours.tPalette.m3surfaceContainer
-    }
 
-    ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: Tokens.padding.large
-        spacing: Tokens.spacing.medium
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: Tokens.padding.large
+            spacing: Tokens.spacing.medium
 
-        StyledText {
-            text: qsTr("Display Layout")
-            font: Tokens.font.title.small
-            color: Colours.palette.m3onSurface
-        }
-
-        Repeater {
-            model: [
-                { label: qsTr("Extendido"),     icon: "grid_view",      preset: "extended" },
-                { label: qsTr("Duplicado"),     icon: "content_copy",   preset: "mirror" },
-                { label: qsTr("Solo Portátil"), icon: "laptop_mac",     preset: "laptop-only" },
-                { label: qsTr("Solo Externo"),  icon: "desktop_windows",preset: "external-only" },
-            ]
-
-            delegate: PresetButton {
-                required property var modelData
-
-                text: modelData.label
-                iconText: modelData.icon
-                onClicked: Quickshell.execDetached(["python", root.helperPath, "--preset", modelData.preset])
+            StyledText {
+                text: qsTr("Display Layout")
+                font: Tokens.font.title.small
+                color: Colours.palette.m3onSurface
             }
-        }
 
-        Item { Layout.fillHeight: true }
+            Repeater {
+                model: [
+                    { label: qsTr("Extendido"),     icon: "grid_view",      preset: "extended" },
+                    { label: qsTr("Duplicado"),     icon: "content_copy",   preset: "mirror" },
+                    { label: qsTr("Solo Portátil"), icon: "laptop_mac",     preset: "laptop-only" },
+                    { label: qsTr("Solo Externo"),  icon: "desktop_windows",preset: "external-only" },
+                ]
 
-        ActionButton {
-            text: qsTr("Configuración completa")
-            onClicked: Quickshell.execDetached(["qs", "-c", "widgets", "ipc", "call", "displays", "full"])
+                delegate: PresetButton {
+                    required property var modelData
+
+                    text: modelData.label
+                    iconText: modelData.icon
+                    onClicked: Quickshell.execDetached(["python", root.helperPath, "--preset", modelData.preset])
+                }
+            }
+
+            Item { Layout.fillHeight: true }
+
+            ActionButton {
+                text: qsTr("Configuración completa")
+                onClicked: Quickshell.execDetached(["qs", "-c", "widgets", "ipc", "call", "displays", "full"])
+            }
         }
     }
 
