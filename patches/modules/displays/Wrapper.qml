@@ -1,11 +1,8 @@
-pragma ComponentBehavior: Bound
-
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Caelestia.Config
 import qs.components
-import qs.components.controls
 import qs.services
 
 Item {
@@ -25,68 +22,84 @@ Item {
     anchors.topMargin: (-height - 5) * offsetScale
     opacity: 1 - offsetScale
 
-    Behavior on offsetScale { Anim {} }
+    Behavior on offsetScale { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
     StyledRect {
         anchors.fill: parent
-        topLeftRadius: 0
-        topRightRadius: Tokens.rounding.extraLarge
+        topLeftRadius: Tokens.rounding.extraLarge
+        topRightRadius: 0
         bottomLeftRadius: 0
         bottomRightRadius: Tokens.rounding.extraLarge
         color: Colours.tPalette.m3surfaceContainer
     }
 
-    ColumnLayout {
+    Column {
         anchors.fill: parent
         anchors.margins: Tokens.padding.large
         spacing: Tokens.spacing.medium
 
         StyledText {
-            text: qsTr("Display Layout")
+            text: "Display Layout"
             font: Tokens.font.title.small
             color: Colours.palette.m3onSurface
         }
 
-        TextButton {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 48
-            text: qsTr("Extendido")
-            type: TextButton.Tonal
-            onClicked: Quickshell.execDetached(["python", root.helperPath, "--preset", "extended"])
+        Item {
+            width: parent.width
+            height: 48
+
+            StyledRect {
+                anchors.fill: parent
+                radius: btn1.containsMouse ? Tokens.rounding.small : Tokens.rounding.large
+                color: btn1.containsMouse ? Colours.tPalette.m3surfaceContainer : Colours.tPalette.m3surfaceContainerLow
+                Behavior on radius { NumberAnimation { duration: 100 } }
+                Behavior on color { ColorAnimation { duration: 100 } }
+            }
+
+            StyledText {
+                anchors.left: parent.left; anchors.leftMargin: Tokens.padding.medium
+                anchors.verticalCenter: parent.verticalCenter
+                text: "Extendido"
+                font: Tokens.font.body.medium
+                color: Colours.palette.m3onSurface
+            }
+
+            MouseArea {
+                id: btn1
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: Quickshell.execDetached(["notify-send", "Test", "Extendido clicked"])
+            }
         }
 
-        TextButton {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 48
-            text: qsTr("Duplicado")
-            type: TextButton.Tonal
-            onClicked: Quickshell.execDetached(["python", root.helperPath, "--preset", "mirror"])
-        }
+        Item {
+            width: parent.width
+            height: 48
 
-        TextButton {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 48
-            text: qsTr("Solo Portátil")
-            type: TextButton.Tonal
-            onClicked: Quickshell.execDetached(["python", root.helperPath, "--preset", "laptop-only"])
-        }
+            StyledRect {
+                anchors.fill: parent
+                radius: btn2.containsMouse ? Tokens.rounding.small : Tokens.rounding.large
+                color: btn2.containsMouse ? Colours.tPalette.m3surfaceContainer : Colours.tPalette.m3surfaceContainerLow
+                Behavior on radius { NumberAnimation { duration: 100 } }
+                Behavior on color { ColorAnimation { duration: 100 } }
+            }
 
-        TextButton {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 48
-            text: qsTr("Solo Externo")
-            type: TextButton.Tonal
-            onClicked: Quickshell.execDetached(["python", root.helperPath, "--preset", "external-only"])
-        }
+            StyledText {
+                anchors.left: parent.left; anchors.leftMargin: Tokens.padding.medium
+                anchors.verticalCenter: parent.verticalCenter
+                text: "Configuración completa"
+                font: Tokens.font.body.medium
+                color: Colours.palette.m3onSurface
+            }
 
-        Item { Layout.fillHeight: true }
-
-        TextButton {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 44
-            text: qsTr("Configuración completa")
-            type: TextButton.Tonal
-            onClicked: Quickshell.execDetached(["qs", "-c", "widgets", "ipc", "call", "displays", "full"])
+            MouseArea {
+                id: btn2
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: Quickshell.execDetached(["qs", "-c", "widgets", "ipc", "call", "displays", "full"])
+            }
         }
     }
 }
