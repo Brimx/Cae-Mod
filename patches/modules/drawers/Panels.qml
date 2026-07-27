@@ -4,7 +4,6 @@ import Caelestia.Config
 import qs.components
 import qs.modules.bar as Bar
 import qs.modules.dashboard as Dashboard
-import qs.modules.displays as Displays
 import qs.modules.launcher as Launcher
 import qs.modules.notifications as Notifications
 import qs.modules.osd as Osd
@@ -29,7 +28,6 @@ Item {
     readonly property alias sessionWrapper: sessionWrapper
     readonly property alias launcher: launcher
     readonly property alias dashboard: dashboard
-    readonly property alias displays: displays
     readonly property alias popouts: popoutsWrapper.content
     readonly property alias popoutsWrapper: popoutsWrapper
     readonly property alias utilities: utilities
@@ -116,16 +114,6 @@ Item {
 
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-    }
-
-    Displays.Wrapper {
-        id: displays
-
-        screenState: root.screenState
-        z: 1
-
-        anchors.top: parent.top
-        anchors.right: parent.right
     }
 
     BarPopouts.ClipWrapper {

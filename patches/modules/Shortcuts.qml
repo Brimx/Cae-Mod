@@ -108,19 +108,6 @@ Scope {
         }
     }
 
-    // qmllint disable unresolved-type
-    CustomShortcut {
-        // qmllint enable unresolved-type
-        name: "displays"
-        description: "Toggle displays panel"
-        onPressed: {
-            if (root.hasFullscreen)
-                return;
-            const screenState = ShellState.forActive();
-            screenState.displays = !screenState.displays;
-        }
-    }
-
     IpcHandler {
         function toggle(drawer: string): void {
             if (list().split("\n").includes(drawer)) {
