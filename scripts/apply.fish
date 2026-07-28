@@ -26,6 +26,10 @@ cp $REPO_DIR/config/caelestia/shell.json ~/.config/caelestia/shell.json
 # Fish
 cp $REPO_DIR/config/fish/config.fish ~/.config/fish/config.fish
 
+# Quickshell overview
+mkdir -p ~/.config/quickshell/overview
+cp -r $REPO_DIR/config/quickshell/overview/* ~/.config/quickshell/overview/
+
 # Systemd user
 cp $REPO_DIR/config/systemd/user/trackpad-edges.service ~/.config/systemd/user/trackpad-edges.service
 

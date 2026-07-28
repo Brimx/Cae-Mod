@@ -43,6 +43,7 @@ git pull
 - **Intel Arc Xe2**: Variables de entorno DXVK_ASYNC y ANV_ALLOW_GPL
 - **GPU fix (xe driver)**: Utilización de GPU via fdinfo para Intel Arc B580/Battlemage (driver xe)
 - **Cursor**: Vimix cursors
+- **Workspace Overview**: Vista general de workspaces con live previews, drag & drop, special workspaces (Super+Tab)
 
 ## Features planeadas
 

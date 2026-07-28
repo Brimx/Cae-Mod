@@ -102,5 +102,5 @@ return {
     kbShowPanels               = "SUPER + K",
     kbLock                     = "SUPER + L",
     kbRestoreLock              = "SUPER + ALT + L",
-    kbDisplays                 = "SUPER + P",
+    kbOverview                 = "SUPER + TAB",
 }
