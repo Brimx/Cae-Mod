@@ -43,7 +43,7 @@ class Command:
 
         subprocess.run(["wl-copy"], input=sc_data)
 
-        dest = screenshots_dir / datetime.now().strftime("%Y%m%d%H%M%S")
+        dest = (screenshots_dir / datetime.now().strftime("%Y%m%d%H%M%S")).with_suffix(".png")
         screenshots_dir.mkdir(exist_ok=True, parents=True)
         dest.write_bytes(sc_data)
 

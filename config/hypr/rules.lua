@@ -33,7 +33,7 @@ hl.window_rule({ match = { tag = "float" }, float = true })
 hl.window_rule({
     match = {
         class =
-        "foot|equibop|org.quickshell|imv|swappy|krita|gimp|inkscape|darktable|resolve|kdenlive|shotcut|blender|godot|(steam_app_(default|[0-9]+))|gamescope",
+        "foot|equibop|org.quickshell|imv|swappy|krita|gimp|inkscape|darktable|resolve|kdenlive|shotcut|blender|godot",
     },
     tag   = "+opaque_app",
 })
@@ -65,11 +65,16 @@ hl.window_rule({
     center = true,
 })
 
--- Games (Steam, Lutris/Wine, Gamescope)
+-- Games (Steam, Bottles, Wine, Gamescope)
 hl.window_rule({
     match        = { class = "(steam_app_(default|[0-9]+))|gamescope" },
+    float        = true,
+    center       = true,
+    keep_aspect_ratio = true,
     immediate    = true,
     idle_inhibit = "always",
+    workspace    = "10 silent",
+    opacity      = "1.0 override",
 })
 
 -- Steam

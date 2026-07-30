@@ -133,6 +133,7 @@ hl.bind(vars.kbSystemMonitorWs, hl.dsp.exec_cmd("caelestia toggle sysmon"))
 hl.bind(vars.kbMusicWs, hl.dsp.exec_cmd("caelestia toggle music"))
 hl.bind(vars.kbCommunicationWs, hl.dsp.exec_cmd("caelestia toggle communication"))
 hl.bind(vars.kbTodoWs, hl.dsp.exec_cmd("caelestia toggle todo"))
+hl.bind("SUPER + G", hl.dsp.exec_cmd([[if hyprctl activeworkspace -j | grep -q '"id":10'; then hyprctl dispatch "hl.dsp.focus({ workspace = 'previous' })"; else hyprctl dispatch "hl.dsp.focus({ workspace = '10' })"; fi]]))
 
 -- Apps
 hl.bind(vars.kbTerminal, hl.dsp.exec_cmd(vars.terminal))
@@ -149,6 +150,7 @@ hl.bind("SUPER + ALT + R", hl.dsp.exec_cmd("caelestia record -s"))
 hl.bind("CTRL + ALT + R", hl.dsp.exec_cmd("caelestia record"))
 hl.bind("SUPER + SHIFT + ALT + R", hl.dsp.exec_cmd("caelestia record -r"))
 hl.bind("SUPER + SHIFT + C", hl.dsp.exec_cmd("hyprpicker -a"))
+hl.bind(vars.kbOverview, hl.dsp.exec_cmd("qs ipc -c overview call overview toggle"))
 
 -- Volume
 hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { locked = true })

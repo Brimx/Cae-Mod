@@ -33,25 +33,25 @@
         "idle": {
             "timeouts": [
                 {
-                    "idleAction": "dpms off",
-                    "returnAction": "dpms on",
+                    "idleAction": "lock",
                     "timeout": 180
                 },
                 {
-                    "idleAction": "lock",
-                    "timeout": 300
+                    "idleAction": "dpms off",
+                    "returnAction": "dpms on",
+                    "timeout": 210
                 },
                 {
                     "idleAction": [
                         "suspendThenHibernate"
                     ],
-                    "timeout": 360
+                    "timeout": 300
                 }
             ]
         }
     },
     "services": {
-        "audioIncrement": 0.02,
+        "audioIncrement": 0.05,
         "brightnessIncrement": 0.02,
         "gpuType": "GENERIC"
     },
