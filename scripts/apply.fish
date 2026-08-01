@@ -30,6 +30,7 @@ cp $REPO_DIR/config/fish/config.fish ~/.config/fish/config.fish
 cp $REPO_DIR/config/systemd/user/trackpad-edges.service ~/.config/systemd/user/trackpad-edges.service
 
 # Scripts
+cp -r $REPO_DIR/config/quickshell/overview ~/.config/quickshell/overview
 cp $REPO_DIR/scripts/trackpad-edges.py ~/.local/bin/trackpad-edges.py
 
 # Patches (sudo)
@@ -40,14 +41,16 @@ sudo cp $REPO_DIR/patches/modules/drawers/Panels.qml /etc/xdg/quickshell/caelest
 sudo cp $REPO_DIR/patches/modules/IdleMonitors.qml /etc/xdg/quickshell/caelestia/modules/IdleMonitors.qml
 sudo cp $REPO_DIR/patches/modules/bar/popouts/BatteryConservation.qml /etc/xdg/quickshell/caelestia/modules/bar/popouts/BatteryConservation.qml
 sudo cp $REPO_DIR/patches/modules/bar/popouts/Battery.qml /etc/xdg/quickshell/caelestia/modules/bar/popouts/Battery.qml
+sudo cp $REPO_DIR/patches/modules/dashboard/dash/Media.qml /etc/xdg/quickshell/caelestia/modules/dashboard/dash/Media.qml
+sudo cp $REPO_DIR/patches/modules/dashboard/Media.qml /etc/xdg/quickshell/caelestia/modules/dashboard/Media.qml
+sudo cp $REPO_DIR/patches/modules/dashboard/media/CoverVisualiser.qml /etc/xdg/quickshell/caelestia/modules/dashboard/media/CoverVisualiser.qml
+sudo cp $REPO_DIR/patches/modules/dashboard/media/Details.qml /etc/xdg/quickshell/caelestia/modules/dashboard/media/Details.qml
+sudo cp $REPO_DIR/patches/modules/dashboard/media/LyricsAndSelector.qml /etc/xdg/quickshell/caelestia/modules/dashboard/media/LyricsAndSelector.qml
+sudo cp $REPO_DIR/patches/services/Players.qml /etc/xdg/quickshell/caelestia/services/Players.qml
+sudo cp $REPO_DIR/patches/components/images/FadeImage.qml /etc/xdg/quickshell/caelestia/components/images/FadeImage.qml
+sudo cp $REPO_DIR/patches/components/widgets/CoverArt.qml /etc/xdg/quickshell/caelestia/components/widgets/CoverArt.qml
+sudo cp $REPO_DIR/patches/modules/lock/Media.qml /etc/xdg/quickshell/caelestia/modules/lock/Media.qml
 sudo cp $REPO_DIR/patches/sddm.conf /etc/sddm.conf
 sudo cp $REPO_DIR/patches/keyd/default.conf /etc/keyd/default.conf
 
-# GPU plugin fix (Intel Arc xe driver)
-echo "Do you want to build and install the GPU xe driver fix? (y/N)"
-read -l answer
-if test "$answer" = y -o "$answer" = Y
-    $REPO_DIR/scripts/build-gpu-plugin.fish
-end
 
-echo "Done."

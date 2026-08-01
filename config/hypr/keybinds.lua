@@ -13,6 +13,7 @@ hl.bind(vars.kbShowSidebar, hl.dsp.global("caelestia:sidebar"))
 hl.bind(vars.kbClearNotifs, hl.dsp.global("caelestia:clearNotifs"), { locked = true })
 hl.bind(vars.kbShowPanels, hl.dsp.global("caelestia:showall"))
 hl.bind(vars.kbLock, hl.dsp.global("caelestia:lock"))
+hl.bind(vars.kbOverview, hl.dsp.exec_cmd("qs ipc -c overview call overview toggle"))
 
 -- Restore lock
 hl.bind(vars.kbRestoreLock, function()
@@ -150,7 +151,6 @@ hl.bind("SUPER + ALT + R", hl.dsp.exec_cmd("caelestia record -s"))
 hl.bind("CTRL + ALT + R", hl.dsp.exec_cmd("caelestia record"))
 hl.bind("SUPER + SHIFT + ALT + R", hl.dsp.exec_cmd("caelestia record -r"))
 hl.bind("SUPER + SHIFT + C", hl.dsp.exec_cmd("hyprpicker -a"))
-hl.bind(vars.kbOverview, hl.dsp.exec_cmd("qs ipc -c overview call overview toggle"))
 
 -- Volume
 hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { locked = true })

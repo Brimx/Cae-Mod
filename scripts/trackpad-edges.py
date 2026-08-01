@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-import libevdev, os, subprocess, sys, signal, glob
+import libevdev, os, subprocess, sys, signal, glob, time
 
-LEFT_ZONE  = 0.12
-RIGHT_ZONE = 0.12
+LEFT_ZONE  = 0.08
+RIGHT_ZONE = 0.08
 TOP_ZONE   = 0.08
-STEP       = 100
+STEP       = 75
 VOL_STEP   = "5%"
 BRIGHT_STEP = "5%"
 MEDIA_SEEK = 5
+
+TAP_FINGERS = 4
+TAP_MAX_MS  = 300
 
 def find_touchpad():
     for ev in glob.glob("/dev/input/event*"):
@@ -50,18 +53,41 @@ def main():
     active = None
     acc = 0
 
+    active_slots = set()
+    tap_start_time = None
+    had_swipe = False
+
     for e in dev.events():
         if e.matches(libevdev.EV_ABS.ABS_MT_POSITION_X):
             cur_x = e.value
         elif e.matches(libevdev.EV_ABS.ABS_MT_POSITION_Y):
             cur_y = e.value
         elif e.matches(libevdev.EV_ABS.ABS_MT_TRACKING_ID):
-            if e.value == -1:
-                active = None; acc = 0
+            slot = e.slot if hasattr(e, 'slot') else 0
+            if e.value >= 0:
+                active_slots.add(slot)
+                if len(active_slots) >= TAP_FINGERS and tap_start_time is None:
+                    tap_start_time = time.monotonic()
+                    had_swipe = False
+            else:
+                active_slots.discard(slot)
+                if tap_start_time is not None and len(active_slots) == 0:
+                    elapsed_ms = (time.monotonic() - tap_start_time) * 1000
+                    if elapsed_ms < TAP_MAX_MS and not had_swipe:
+                        run("playerctl", "play-pause")
+                    tap_start_time = None
+                    had_swipe = False
+
+            if len(active_slots) == 0:
+                active = None
+                acc = 0
             continue
         elif e.matches(libevdev.EV_KEY.BTN_TOUCH):
             if e.value == 0:
                 active = None; acc = 0
+                active_slots.clear()
+                tap_start_time = None
+                had_swipe = False
             continue
         else:
             continue
@@ -76,6 +102,7 @@ def main():
         pos = cur_y if active in ("left", "right") else cur_x
         delta = pos - acc
         if abs(delta) < STEP: continue
+        had_swipe = True
         d = 1 if delta > 0 else -1
         if active == "left":
             run("wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", f"{VOL_STEP}{'+' if d < 0 else '-'}")

@@ -28,6 +28,13 @@ hl.on("hyprland.start", function()
     -- Start shell
     hl.exec_cmd("caelestia shell -d")
 
+    -- Workspace overview
+    hl.exec_cmd("sleep 2 && qs -c overview")
+
+    -- Touchpad edge gestures
+    hl.exec_cmd("sleep 2 && trackpad-edges.py")
+    hl.exec_cmd("sleep 2 && trackpad-edges.py")
+
 end)
 
 -- Resizer listener
