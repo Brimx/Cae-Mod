@@ -21,8 +21,8 @@
         "enable": true,
         "hideEmptyRows": true,
         "closeOnFocusLoss": true,
-        "previewsEnabled": false,
-        "previewMode": "live",
+        "previewsEnabled": true,
+        "previewMode": "event",
         "includeInactiveMonitorPreviews": true,
         "showSpecialWorkspaces": true,
         "specialWorkspaceColumns": 5
