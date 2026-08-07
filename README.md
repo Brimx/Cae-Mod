@@ -2,7 +2,7 @@
 
 A dots-file for Hyprland with Quickshell, based on [Caelestia](https://github.com/caelestia-dots/shell).
 
-> Personalización overlay sobre caelestia-shell v2.1.0.
+> Personalización overlay sobre caelestia-shell v2.2.0.
 > Inspirado por [end-4/dots-hyprland](https://github.com/end-4/dots-hyprland)
 > e [ilyamiro/nixos-configuration](https://github.com/ilyamiro/nixos-configuration).
 
@@ -24,12 +24,18 @@ cd Cae-Mod
 ./scripts/apply.fish
 ```
 
-### Post-actualización AUR
+### Post-actualización de caelestia
 
 ```fish
-git pull
-./scripts/apply.fish
+caelestia update        # actualiza caelestia-shell (no existe "upgrade")
+git pull                # trae los últimos cambios de Cae-Mod
+./scripts/apply.fish    # re-aplica configs y patches
 ```
+
+> ⚠️ Los patches de `patches/` son version-específicos. Si el release nuevo de
+> caelestia cambia la estructura de los QML, los patches pueden romper el shell.
+> Tras cada `caelestia update`, verifica que el shell arranca sin errores
+> (`qs -c caelestia -n -d`) y revisa los diffs antes de re-aplicar.
 
 ## Qué incluye
 
@@ -43,7 +49,7 @@ git pull
 - **Intel Arc Xe2**: Variables de entorno DXVK_ASYNC y ANV_ALLOW_GPL
 - **GPU fix (xe driver)**: Utilización de GPU via fdinfo para Intel Arc B580/Battlemage (driver xe)
 - **Cursor**: Vimix cursors
-- **Workspace Overview**: Vista general de workspaces con live previews, drag & drop, special workspaces (Super+Tab)
+- **Workspace Overview**: Vista general de workspaces con previews cacheadas (modo event), drag & drop, special workspaces (Super+Tab)
 
 ## Features planeadas
 
