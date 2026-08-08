@@ -15,15 +15,36 @@
         "dragThreshold": 20,
         "persistent": false,
         "showOnHover": true,
-        "status": {
-            "showAudio": true,
-            "showBattery": true,
-            "showKbLayout": false,
-            "showLockStatus": true,
-            "showMicrophone": false,
-            "showNetwork": true,
-            "showWifi": true
-        }
+        "statusIcons": [
+            {
+                "id": "lockStatus",
+                "enabled": true
+            },
+            {
+                "id": "audio",
+                "enabled": true
+            },
+            {
+                "id": "microphone",
+                "enabled": false
+            },
+            {
+                "id": "kbLayout",
+                "enabled": false
+            },
+            {
+                "id": "network",
+                "enabled": true
+            },
+            {
+                "id": "bluetooth",
+                "enabled": true
+            },
+            {
+                "id": "battery",
+                "enabled": true
+            }
+        ]
     },
     "border": {
         "rounding": 0,
