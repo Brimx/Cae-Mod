@@ -1,9 +1,4 @@
 {
-    "appearance": {
-        "transparency": {
-            "enabled": true
-        }
-    },
     "bar": {
         "activeWindow": {
             "compact": true,
@@ -69,22 +64,6 @@
                     "timeout": 300
                 }
             ]
-        }
-    },
-    "services": {
-        "audioIncrement": 0.05,
-        "brightnessIncrement": 0.02,
-        "gpuType": "GENERIC"
-    },
-    "sidebar": {
-        "enabled": true
-    },
-    "utilities": {
-        "toasts": {
-            "audioInputChanged": false,
-            "audioOutputChanged": false,
-            "capsLockChanged": true,
-            "kbLayoutChanged": false
         }
     }
 }
