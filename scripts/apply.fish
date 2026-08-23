@@ -29,6 +29,10 @@ cp $REPO_DIR/config/fish/config.fish ~/.config/fish/config.fish
 # Systemd user
 cp $REPO_DIR/config/systemd/user/trackpad-edges.service ~/.config/systemd/user/trackpad-edges.service
 
+# Audio (WirePlumber: anti-stutter + auto-switch jack)
+mkdir -p ~/.config/wireplumber/wireplumber.conf.d
+cp $REPO_DIR/config/wireplumber/wireplumber.conf.d/*.conf ~/.config/wireplumber/wireplumber.conf.d/
+
 # Scripts
 cp -r $REPO_DIR/config/quickshell/overview ~/.config/quickshell/overview
 cp $REPO_DIR/scripts/trackpad-edges.py ~/.local/bin/trackpad-edges.py
@@ -52,5 +56,9 @@ sudo cp $REPO_DIR/patches/components/widgets/CoverArt.qml /etc/xdg/quickshell/ca
 sudo cp $REPO_DIR/patches/modules/lock/Media.qml /etc/xdg/quickshell/caelestia/modules/lock/Media.qml
 sudo cp $REPO_DIR/patches/sddm.conf /etc/sddm.conf
 sudo cp $REPO_DIR/patches/keyd/default.conf /etc/keyd/default.conf
+sudo cp $REPO_DIR/patches/pipewire/pipewire.conf.d/fix-audio.conf /etc/pipewire/pipewire.conf.d/fix-audio.conf
+
+# Reiniciar servidor de audio si cambió
+systemctl --user try-restart pipewire wireplumber
 
 

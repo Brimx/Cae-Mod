@@ -2,7 +2,7 @@
 
 A dots-file for Hyprland with Quickshell, based on [Caelestia](https://github.com/caelestia-dots/shell).
 
-> Personalización overlay sobre caelestia-shell v2.2.0.
+> Personalización overlay sobre caelestia-shell v2.3.0.
 > Inspirado por [end-4/dots-hyprland](https://github.com/end-4/dots-hyprland)
 > e [ilyamiro/nixos-configuration](https://github.com/ilyamiro/nixos-configuration).
 
@@ -50,10 +50,11 @@ git pull                # trae los últimos cambios de Cae-Mod
 - **GPU fix (xe driver)**: Utilización de GPU via fdinfo para Intel Arc B580/Battlemage (driver xe)
 - **Cursor**: Vimix cursors
 - **Workspace Overview**: Vista general de workspaces con previews cacheadas (modo event), drag & drop, special workspaces (Super+Tab)
+- **Battery Conservation**: Toggle 80%/100% con asusctl en el popout de batería
+- **Audio fixes (Asus Vivobook S14 / ALC294 + SOF)**: Anti-stutter (suspensión OFF + quantum 2048 fijo) y auto-switch de audífonos por jack (`split-enable=false`)
 
 ## Features planeadas
 
-- [ ] Widget de batería con toggle 80%/100%
 - [ ] AI sidebar (inspirado en end-4)
 - [ ] Glassmorphism / gradientes (inspirado en ilyamiro)
 - [ ] Módulos QML propios

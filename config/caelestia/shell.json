@@ -5,6 +5,7 @@
             "showOnHover": true
         },
         "clock": {
+            "background": false,
             "showDate": false
         },
         "dragThreshold": 20,
@@ -12,32 +13,32 @@
         "showOnHover": true,
         "statusIcons": [
             {
-                "id": "lockStatus",
-                "enabled": true
+                "enabled": true,
+                "id": "lockStatus"
             },
             {
-                "id": "audio",
-                "enabled": true
+                "enabled": true,
+                "id": "audio"
             },
             {
-                "id": "microphone",
-                "enabled": false
+                "enabled": false,
+                "id": "microphone"
             },
             {
-                "id": "kbLayout",
-                "enabled": false
+                "enabled": false,
+                "id": "kbLayout"
             },
             {
-                "id": "network",
-                "enabled": true
+                "enabled": true,
+                "id": "network"
             },
             {
-                "id": "bluetooth",
-                "enabled": true
+                "enabled": true,
+                "id": "bluetooth"
             },
             {
-                "id": "battery",
-                "enabled": true
+                "enabled": true,
+                "id": "battery"
             }
         ]
     },
