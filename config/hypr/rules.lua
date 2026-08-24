@@ -65,6 +65,16 @@ hl.window_rule({
     center = true,
 })
 
+-- Video players - prevent idle/lock/suspend while playing (stremio doesn't send wayland idle-inhibit)
+hl.window_rule({
+    match        = { class = "com.stremio.stremio|stremio|celluloid|mpv" },
+    idle_inhibit = "always",
+})
+hl.window_rule({
+    match        = { class = "firefox" },
+    idle_inhibit = "focus",
+})
+
 -- Games (Steam, Bottles, Wine, Gamescope)
 hl.window_rule({
     match        = { class = "(steam_app_(default|[0-9]+))|gamescope" },
