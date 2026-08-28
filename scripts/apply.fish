@@ -57,6 +57,9 @@ sudo cp $REPO_DIR/patches/modules/lock/Media.qml /etc/xdg/quickshell/caelestia/m
 sudo cp $REPO_DIR/patches/sddm.conf /etc/sddm.conf
 sudo cp $REPO_DIR/patches/keyd/default.conf /etc/keyd/default.conf
 sudo cp $REPO_DIR/patches/pipewire/pipewire.conf.d/fix-audio.conf /etc/pipewire/pipewire.conf.d/fix-audio.conf
+sudo mkdir -p /etc/asusd
+sudo cp $REPO_DIR/patches/asusd/asusd.ron /etc/asusd/asusd.ron
+sudo systemctl try-restart asusd
 
 # Reiniciar servidor de audio si cambió
 systemctl --user try-restart pipewire wireplumber

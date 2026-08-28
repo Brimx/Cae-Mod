@@ -51,6 +51,7 @@ git pull                # trae los últimos cambios de Cae-Mod
 - **Cursor**: Vimix cursors
 - **Workspace Overview**: Vista general de workspaces con previews cacheadas (modo event), drag & drop, special workspaces (Super+Tab)
 - **Battery Conservation**: Toggle 80%/100% con asusctl en el popout de batería
+- **Power profiles (Asus Vivobook S14 / Lunar Lake)**: `Quiet` en batería sin turbo (`bat_command`/`ac_command` en `asusd.ron` desactiva `intel_pstate/no_turbo`) para bajar de ~10W a ~6-7W, `Performance` en AC
 - **Audio fixes (Asus Vivobook S14 / ALC294 + SOF)**: Anti-stutter (suspensión OFF + quantum 2048 fijo) y auto-switch de audífonos por jack (`split-enable=false`)
 
 ## Features planeadas
