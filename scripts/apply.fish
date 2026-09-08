@@ -57,6 +57,11 @@ sudo cp $REPO_DIR/patches/modules/lock/Media.qml /etc/xdg/quickshell/caelestia/m
 sudo cp $REPO_DIR/patches/sddm.conf /etc/sddm.conf
 sudo cp $REPO_DIR/patches/keyd/default.conf /etc/keyd/default.conf
 sudo cp $REPO_DIR/patches/pipewire/pipewire.conf.d/fix-audio.conf /etc/pipewire/pipewire.conf.d/fix-audio.conf
+sudo mkdir -p /etc/modprobe.d
+sudo cp $REPO_DIR/patches/modprobe.d/*.conf /etc/modprobe.d/
+sudo cp $REPO_DIR/patches/firmware/alc294-asus-fix.fw /lib/firmware/alc294-asus-fix.fw
+# NOTE: /etc/mkinitcpio.conf FILES=() debe incluir alc294-asus-fix.fw para
+# que el patch aplique en early boot. Revisar a mano y luego: sudo mkinitcpio -P
 sudo mkdir -p /etc/asusd
 sudo cp $REPO_DIR/patches/asusd/asusd.ron /etc/asusd/asusd.ron
 sudo systemctl try-restart asusd

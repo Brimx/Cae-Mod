@@ -31,9 +31,8 @@ hl.on("hyprland.start", function()
     -- Workspace overview
     hl.exec_cmd("sleep 2 && qs -c overview")
 
-    -- Touchpad edge gestures
-    hl.exec_cmd("sleep 2 && trackpad-edges.py")
-    hl.exec_cmd("sleep 2 && trackpad-edges.py")
+    -- Touchpad edge gestures (systemd service; keep one-shot fallback)
+    hl.exec_cmd("systemctl --user start trackpad-edges.service")
 
 end)
 

@@ -1,6 +1,6 @@
 (
-    charge_control_end_threshold: 100,
-    base_charge_control_end_threshold: 100,
+    charge_control_end_threshold: 80,
+    base_charge_control_end_threshold: 80,
     disable_nvidia_powerd_on_battery: true,
     ac_command: "echo 0 > /sys/devices/system/cpu/intel_pstate/no_turbo",
     bat_command: "echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo",
@@ -18,11 +18,11 @@
             enabled: false,
             group: {},
         ),
-        Balanced: (
+        Performance: (
             enabled: false,
             group: {},
         ),
-        Performance: (
+        Balanced: (
             enabled: false,
             group: {},
         ),
@@ -32,11 +32,11 @@
             enabled: false,
             group: {},
         ),
-        Quiet: (
+        Performance: (
             enabled: false,
             group: {},
         ),
-        Performance: (
+        Quiet: (
             enabled: false,
             group: {},
         ),

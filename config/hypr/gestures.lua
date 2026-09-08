@@ -23,6 +23,22 @@ hl.gesture({
     fingers   = vars.gestureFingersMore,
     direction = "down",
     action    = function()
-        hl.exec_cmd(vars.sleepGestureCmd)
+        hl.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")
+    end,
+})
+
+-- 3 dedos: multimedia horizontal (left/right)
+hl.gesture({
+    fingers   = vars.gestureFingers,
+    direction = "left",
+    action    = function()
+        hl.exec_cmd("playerctl previous")
+    end,
+})
+hl.gesture({
+    fingers   = vars.gestureFingers,
+    direction = "right",
+    action    = function()
+        hl.exec_cmd("playerctl next")
     end,
 })

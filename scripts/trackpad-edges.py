@@ -40,77 +40,100 @@ def run(*args):
     subprocess.run(args, capture_output=True)
 
 def main():
-    device = find_touchpad()
-    if not device:
-        print("No touchpad found", file=sys.stderr)
-        sys.exit(1)
-
-    fd = open(device, "rb")
-    dev = libevdev.Device(fd)
-    xmin, xmax, ymin, ymax = bounds(dev)
-
-    cur_x = cur_y = None
-    active = None
-    acc = 0
-
-    active_slots = set()
-    tap_start_time = None
-    had_swipe = False
-
-    for e in dev.events():
-        if e.matches(libevdev.EV_ABS.ABS_MT_POSITION_X):
-            cur_x = e.value
-        elif e.matches(libevdev.EV_ABS.ABS_MT_POSITION_Y):
-            cur_y = e.value
-        elif e.matches(libevdev.EV_ABS.ABS_MT_TRACKING_ID):
-            slot = e.slot if hasattr(e, 'slot') else 0
-            if e.value >= 0:
-                active_slots.add(slot)
-                if len(active_slots) >= TAP_FINGERS and tap_start_time is None:
-                    tap_start_time = time.monotonic()
-                    had_swipe = False
-            else:
-                active_slots.discard(slot)
-                if tap_start_time is not None and len(active_slots) == 0:
-                    elapsed_ms = (time.monotonic() - tap_start_time) * 1000
-                    if elapsed_ms < TAP_MAX_MS and not had_swipe:
-                        run("playerctl", "play-pause")
-                    tap_start_time = None
-                    had_swipe = False
-
-            if len(active_slots) == 0:
-                active = None
-                acc = 0
+    # Outer retry loop: sobrevive a boot sin touchpad y a suspend/resume (device desaparece)
+    while True:
+        device = find_touchpad()
+        if not device:
+            print("No touchpad found, retrying in 3s", file=sys.stderr)
+            time.sleep(3)
             continue
-        elif e.matches(libevdev.EV_KEY.BTN_TOUCH):
-            if e.value == 0:
-                active = None; acc = 0
-                active_slots.clear()
-                tap_start_time = None
-                had_swipe = False
-            continue
-        else:
-            continue
-        if None in (cur_x, cur_y): continue
 
-        if active is None:
-            active = zone(cur_x, cur_y, xmin, xmax, ymin, ymax) or "none"
-            acc = cur_y if active in ("left", "right") else cur_x
+        try:
+            fd = open(device, "rb")
+            dev = libevdev.Device(fd)
+        except OSError as e:
+            print(f"Failed to open {device}: {e}, retrying", file=sys.stderr)
+            time.sleep(3)
             continue
-        if active == "none": continue
 
-        pos = cur_y if active in ("left", "right") else cur_x
-        delta = pos - acc
-        if abs(delta) < STEP: continue
-        had_swipe = True
-        d = 1 if delta > 0 else -1
-        if active == "left":
-            run("wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", f"{VOL_STEP}{'+' if d < 0 else '-'}")
-        elif active == "right":
-            run("brightnessctl", "set", f"{BRIGHT_STEP}{'+' if d < 0 else '-'}")
-        elif active == "top":
-            run("playerctl", "position", f"{'+' if d > 0 else '-'}{MEDIA_SEEK}")
-        acc = pos
+        try:
+            xmin, xmax, ymin, ymax = bounds(dev)
+
+            cur_x = cur_y = None
+            active = None
+            acc = 0
+
+            active_slots = set()
+            tap_start_time = None
+            had_swipe = False
+
+            for e in dev.events():
+                if e.matches(libevdev.EV_ABS.ABS_MT_POSITION_X):
+                    cur_x = e.value
+                elif e.matches(libevdev.EV_ABS.ABS_MT_POSITION_Y):
+                    cur_y = e.value
+                elif e.matches(libevdev.EV_ABS.ABS_MT_TRACKING_ID):
+                    slot = e.slot if hasattr(e, 'slot') else 0
+                    if e.value >= 0:
+                        active_slots.add(slot)
+                        if len(active_slots) >= TAP_FINGERS and tap_start_time is None:
+                            tap_start_time = time.monotonic()
+                            had_swipe = False
+                    else:
+                        active_slots.discard(slot)
+                        if tap_start_time is not None and len(active_slots) == 0:
+                            elapsed_ms = (time.monotonic() - tap_start_time) * 1000
+                            if elapsed_ms < TAP_MAX_MS and not had_swipe:
+                                run("playerctl", "play-pause")
+                            tap_start_time = None
+                            had_swipe = False
+
+                    if len(active_slots) == 0:
+                        active = None
+                        acc = 0
+                    continue
+                elif e.matches(libevdev.EV_KEY.BTN_TOUCH):
+                    if e.value == 0:
+                        active = None; acc = 0
+                        active_slots.clear()
+                        tap_start_time = None
+                        had_swipe = False
+                    continue
+                else:
+                    continue
+                if None in (cur_x, cur_y): continue
+
+                if active is None:
+                    active = zone(cur_x, cur_y, xmin, xmax, ymin, ymax) or "none"
+                    acc = cur_y if active in ("left", "right") else cur_x
+                    continue
+                if active == "none": continue
+
+                pos = cur_y if active in ("left", "right") else cur_x
+                delta = pos - acc
+                if abs(delta) < STEP: continue
+                had_swipe = True
+                d = 1 if delta > 0 else -1
+                if active == "left":
+                    run("wpctl", "set-volume", "-l", "1.0", "@DEFAULT_AUDIO_SINK@", f"{VOL_STEP}{'+' if d < 0 else '-'}")
+                elif active == "right":
+                    # Usar IPC de caelestia para que el sidebar/OSD se entere (brightnessctl directo no avisa a Quickshell)
+                    # Formato caelestia: "+5%" para subir, "5%-" para bajar (ver services/Brightness.qml:125)
+                    ipc_val = f"+{BRIGHT_STEP}" if d < 0 else f"{BRIGHT_STEP}-"
+                    ret = subprocess.run(["qs", "ipc", "-c", "caelestia", "call", "brightness", "setFor", "active", ipc_val], capture_output=True)
+                    if ret.returncode != 0:
+                        run("brightnessctl", "s", f"{BRIGHT_STEP}{'+' if d < 0 else '-'}")
+                elif active == "top":
+                    run("playerctl", "position", f"{'+' if d > 0 else '-'}{MEDIA_SEEK}")
+                acc = pos
+        except OSError as e:
+            print(f"Device lost: {e}, reconnecting in 2s", file=sys.stderr)
+            try:
+                fd.close()
+            except:
+                pass
+            time.sleep(2)
+            continue
 
 if __name__ == "__main__":
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
