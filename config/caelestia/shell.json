@@ -2,11 +2,13 @@
     "bar": {
         "activeWindow": {
             "compact": true,
+            "inverted": false,
             "showOnHover": true
         },
         "clock": {
             "background": false,
-            "showDate": false
+            "showDate": false,
+            "showIcon": false
         },
         "dragThreshold": 20,
         "persistent": false,
@@ -66,5 +68,14 @@
                 }
             ]
         }
+    },
+    "lock": {
+        "enableHowdy": true,
+        "enabled": true,
+        "maxHowdyTries": 3,
+        "triggerHowdyOnWake": true
+    },
+    "services": {
+        "gpuType": "GENERIC"
     }
 }

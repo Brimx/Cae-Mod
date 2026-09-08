@@ -72,7 +72,7 @@ hl.window_rule({
 })
 hl.window_rule({
     match        = { class = "firefox" },
-    idle_inhibit = "focus",
+    idle_inhibit = "fullscreen",
 })
 
 -- Games (Steam, Bottles, Wine, Gamescope)
