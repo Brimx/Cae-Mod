@@ -87,6 +87,16 @@ hl.window_rule({
     opacity      = "1.0 override",
 })
 
+-- Bottles / Wine / Proton (XWayland no manda idle-inhibit solo, ej. Sekiro vive como steam_proton + sekiro.exe)
+hl.window_rule({
+    match        = { class = "steam_proton|com.usebottles.bottles|bottles|wine.*|proton.*|.*\\.exe" },
+    idle_inhibit = "always",
+})
+hl.window_rule({
+    match        = { initial_class = "steam_proton|.*\\.exe" },
+    idle_inhibit = "always",
+})
+
 -- Steam
 hl.window_rule({ match = { class = "steam" }, rounding = 10 })
 
