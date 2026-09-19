@@ -14,9 +14,10 @@ Column {
     width: parent.width
 
     property int currentLimit: 100
+    property bool busy: false
 
     StyledText {
-        text: qsTr("Charge limit: %1%").arg(root.currentLimit)
+        text: root.busy ? qsTr("Setting limit…") : qsTr("Charge limit: %1%").arg(root.currentLimit)
         font: Tokens.font.body.small
         anchors.horizontalCenter: parent.horizontalCenter
     }
@@ -28,8 +29,9 @@ Column {
         IconButton {
             icon: "shield"
             type: root.currentLimit === 80 ? IconButton.Filled : IconButton.Tonal
+            enabled: !root.busy && root.currentLimit !== 80
             onClicked: {
-                root.currentLimit = 80;
+                root.busy = true;
                 set80.running = true;
             }
         }
@@ -37,8 +39,9 @@ Column {
         IconButton {
             icon: "rocket_launch"
             type: root.currentLimit === 100 ? IconButton.Filled : IconButton.Tonal
+            enabled: !root.busy && root.currentLimit !== 100
             onClicked: {
-                root.currentLimit = 100;
+                root.busy = true;
                 set100.running = true;
             }
         }
@@ -50,10 +53,20 @@ Column {
         command: ["asusctl", "battery", "info"]
         stdout: StdioCollector {
             onStreamFinished: {
-                const match = text.match(/(\d+)%/);
-                if (match) root.currentLimit = parseInt(match[1]);
+                // asusctl dice "Current battery charge limit: 80%" — parse estricto,
+                // el /(\d+)%/ genérico agarraba cualquier % y flapeaba 80<->100
+                const match = text.match(/limit:\s*(\d+)%/);
+                if (match)
+                    root.currentLimit = parseInt(match[1]);
+                root.busy = false;
             }
         }
+        stderr: StdioCollector {
+            onStreamFinished: {
+                root.busy = false;
+            }
+        }
+        onExited: root.busy = false
     }
 
     Process {
@@ -64,10 +77,20 @@ Column {
                 readLimit.running = true;
                 Toaster.toast(
                     qsTr("Battery limit set"),
-                    qsTr("Charge limit set to 80%"),
+                    qsTr("Charge limit set to 80% — baja a 80 descargando, no de golpe"),
                     "power"
                 );
             }
+        }
+        stderr: StdioCollector {
+            onStreamFinished: {
+                root.busy = false;
+                Toaster.toast(qsTr("Battery limit failed"), text, "power");
+            }
+        }
+        onExited: code => {
+            if (code !== 0)
+                root.busy = false;
         }
     }
 
@@ -83,6 +106,16 @@ Column {
                     "power"
                 );
             }
+        }
+        stderr: StdioCollector {
+            onStreamFinished: {
+                root.busy = false;
+                Toaster.toast(qsTr("Battery limit failed"), text, "power");
+            }
+        }
+        onExited: code => {
+            if (code !== 0)
+                root.busy = false;
         }
     }
 

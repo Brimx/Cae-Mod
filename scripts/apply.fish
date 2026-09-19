@@ -42,13 +42,11 @@ echo "Deploying system patches (sudo)..."
 sudo cp $REPO_DIR/patches/components/ScreenState.qml /etc/xdg/quickshell/caelestia/components/ScreenState.qml
 sudo cp $REPO_DIR/patches/modules/Shortcuts.qml /etc/xdg/quickshell/caelestia/modules/Shortcuts.qml
 sudo cp $REPO_DIR/patches/modules/drawers/Panels.qml /etc/xdg/quickshell/caelestia/modules/drawers/Panels.qml
-sudo cp $REPO_DIR/patches/modules/IdleMonitors.qml /etc/xdg/quickshell/caelestia/modules/IdleMonitors.qml
 sudo cp $REPO_DIR/patches/modules/bar/popouts/BatteryConservation.qml /etc/xdg/quickshell/caelestia/modules/bar/popouts/BatteryConservation.qml
 sudo cp $REPO_DIR/patches/modules/bar/popouts/Battery.qml /etc/xdg/quickshell/caelestia/modules/bar/popouts/Battery.qml
 sudo cp $REPO_DIR/patches/modules/dashboard/dash/Media.qml /etc/xdg/quickshell/caelestia/modules/dashboard/dash/Media.qml
 sudo cp $REPO_DIR/patches/modules/dashboard/Media.qml /etc/xdg/quickshell/caelestia/modules/dashboard/Media.qml
 sudo cp $REPO_DIR/patches/modules/dashboard/media/CoverVisualiser.qml /etc/xdg/quickshell/caelestia/modules/dashboard/media/CoverVisualiser.qml
-sudo cp $REPO_DIR/patches/modules/dashboard/media/Details.qml /etc/xdg/quickshell/caelestia/modules/dashboard/media/Details.qml
 sudo cp $REPO_DIR/patches/modules/dashboard/media/LyricsAndSelector.qml /etc/xdg/quickshell/caelestia/modules/dashboard/media/LyricsAndSelector.qml
 sudo cp $REPO_DIR/patches/services/Players.qml /etc/xdg/quickshell/caelestia/services/Players.qml
 sudo cp $REPO_DIR/patches/components/images/FadeImage.qml /etc/xdg/quickshell/caelestia/components/images/FadeImage.qml
@@ -63,8 +61,18 @@ sudo cp $REPO_DIR/patches/firmware/alc294-asus-fix.fw /lib/firmware/alc294-asus-
 # NOTE: /etc/mkinitcpio.conf FILES=() debe incluir alc294-asus-fix.fw para
 # que el patch aplique en early boot. Revisar a mano y luego: sudo mkinitcpio -P
 sudo mkdir -p /etc/asusd
+# Preservar límite de batería vivo (asusctl/EC) para que el deploy no lo pise:
+# el patch trae 80, pero si el usuario está en 100 lo restauramos tras copiar.
+set SAVED_LIMIT (asusctl battery info 2>/dev/null | grep -oE '[0-9]+%' | tr -d '%' | tail -n 1)
+if test -z "$SAVED_LIMIT"
+    set SAVED_LIMIT 80
+end
+echo "Battery limit vivo: $SAVED_LIMIT% (se restaurará tras deploy)"
 sudo cp $REPO_DIR/patches/asusd/asusd.ron /etc/asusd/asusd.ron
 sudo systemctl try-restart asusd
+sleep 2
+asusctl battery limit $SAVED_LIMIT 2>/dev/null; or true
+echo "Battery limit restaurado a: "(asusctl battery info 2>/dev/null | grep -oE '[0-9]+%' | tail -n 1)
 
 # Reiniciar servidor de audio si cambió
 systemctl --user try-restart pipewire wireplumber
