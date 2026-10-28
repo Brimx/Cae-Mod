@@ -77,5 +77,14 @@
     },
     "services": {
         "gpuType": "GENERIC"
+    },
+    "session": {
+        "commands": {
+            "logout": [
+                "hyprctl",
+                "dispatch",
+                "hl.dsp.exit()"
+            ]
+        }
     }
 }
