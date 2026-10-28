@@ -3,6 +3,8 @@ import Quickshell
 import Caelestia.Config
 import qs.components
 import qs.modules.bar as Bar
+import qs.modules.clipboard as Clipboard
+import qs.modules.emoji as Emoji
 import qs.modules.dashboard as Dashboard
 import qs.modules.launcher as Launcher
 import qs.modules.notifications as Notifications
@@ -27,6 +29,8 @@ Item {
     readonly property alias session: session
     readonly property alias sessionWrapper: sessionWrapper
     readonly property alias launcher: launcher
+    readonly property alias clipboard: clipboard
+    readonly property alias emoji: emoji
     readonly property alias dashboard: dashboard
     readonly property alias popouts: popoutsWrapper.content
     readonly property alias popoutsWrapper: popoutsWrapper
@@ -101,6 +105,31 @@ Item {
 
         screen: root.screen
         screenState: root.screenState
+        panels: root
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+    }
+
+    // Mismo slot inferior que el launcher; exclusión mutua vía watcher
+    // en ContentWindow (solo uno visible a la vez).
+    Clipboard.Wrapper {
+        id: clipboard
+
+        screenState: root.screenState
+        screen: root.screen
+        panels: root
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+    }
+
+    // Gemelo del clipboard para emojis/glyphs (mismo slot, sin tabbar).
+    Emoji.Wrapper {
+        id: emoji
+
+        screenState: root.screenState
+        screen: root.screen
         panels: root
 
         anchors.horizontalCenter: parent.horizontalCenter

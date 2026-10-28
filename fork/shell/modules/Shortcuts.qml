@@ -85,6 +85,49 @@ Scope {
     // qmllint disable unresolved-type
     CustomShortcut {
         // qmllint enable unresolved-type
+        name: "clipboard"
+        description: "Toggle clipboard"
+        onPressed: {
+            if (root.hasFullscreen)
+                return;
+            const screenState = ShellState.forActive();
+            // La exclusión mutua con el launcher vive en ContentWindow
+            // (watcher central: cubre atajo, hover e IPC).
+            screenState.clipboardDeleteMode = false;
+            screenState.clipboard = !screenState.clipboard;
+        }
+    }
+
+    // qmllint disable unresolved-type
+    CustomShortcut {
+        // qmllint enable unresolved-type
+        name: "clipboardDelete"
+        description: "Open clipboard in delete mode"
+        onPressed: {
+            if (root.hasFullscreen)
+                return;
+            const screenState = ShellState.forActive();
+            screenState.clipboardDeleteMode = true;
+            screenState.clipboard = true;
+        }
+    }
+
+    // qmllint disable unresolved-type
+    CustomShortcut {
+        // qmllint enable unresolved-type
+        name: "emoji"
+        description: "Toggle emoji picker"
+        onPressed: {
+            if (root.hasFullscreen)
+                return;
+            const screenState = ShellState.forActive();
+            screenState.emoji = !screenState.emoji;
+        }
+    }
+
+    // qmllint disable unresolved-type
+    CustomShortcut {
+        // qmllint enable unresolved-type
         name: "sidebar"
         description: "Toggle sidebar"
         onPressed: {

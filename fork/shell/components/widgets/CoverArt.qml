@@ -18,14 +18,8 @@ Item {
     property bool hadPrevious
     property color fallbackColour: Colours.layer(Colours.palette.m3surfaceContainerHighest, 2)
 
-    // Slight glow to separate from bg
-    layer.enabled: true
-    layer.effect: MultiEffect {
-        shadowEnabled: true
-        blurMax: 1
-        shadowColor: Colours.palette.m3outline
-        shadowOpacity: 0.3
-    }
+    // Sin glow: cover plano, círculo normal
+    layer.enabled: false
 
     Behavior on fallbackColour {
         CAnim {}
@@ -42,18 +36,8 @@ Item {
             id: shape
 
             implicitSize: root.width
-            shape: MaterialShape.Cookie12Sided
+            shape: MaterialShape.Circle
             color: Qt.alpha(root.fallbackColour, 1)
-
-            Anim on rotation {
-                running: true
-                paused: !Players.active?.isPlaying
-                from: 360
-                to: 0
-                duration: 23500
-                easing.type: Easing.Linear
-                loops: Animation.Infinite
-            }
         }
     }
 
