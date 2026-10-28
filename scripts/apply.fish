@@ -135,5 +135,11 @@ sleep 2
 asusctl battery limit $SAVED_LIMIT 2>/dev/null; or true
 echo "Battery limit restaurado a: "(asusctl battery info 2>/dev/null | grep -oE '[0-9]+%' | tail -n 1)
 
+# Turbo guard: no_turbo=1 con bateria + perfil de ahorro, por eventos (D-Bus + udev)
+sudo install -Dm755 $REPO_DIR/system/asus-turbo-guard/asus-turbo-guard.sh /usr/local/bin/asus-turbo-guard.sh
+sudo install -Dm644 $REPO_DIR/system/asus-turbo-guard/asus-turbo-guard.service /etc/systemd/system/asus-turbo-guard.service
+sudo systemctl daemon-reload
+sudo systemctl enable --now asus-turbo-guard.service
+
 # Reiniciar servidor de audio si cambió
 systemctl --user try-restart pipewire wireplumber
