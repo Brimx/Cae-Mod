@@ -28,33 +28,33 @@ hl.on("hyprland.start", function()
     -- Start shell
     hl.exec_cmd("caelestia shell -d")
 
-    -- Workspace overview
+    -- Workspace overview (custom)
+    -- NOTA: sin -d a propósito: el fork de daemonize rompe los Process
+    -- arrancados durante la carga del QML. En foreground sobreviven bien
+    -- bajo hyprland exec.
     hl.exec_cmd("sleep 2 && qs -c overview")
 
-    -- Touchpad edge gestures (systemd service; keep one-shot fallback)
-    hl.exec_cmd("systemctl --user start trackpad-edges.service")
-
+    -- Clipboard: drawer nativo del shell (caelestia:clipboard), ya no va
+    -- como qs -c clipboard standalone.
+    hl.exec_cmd("systemctl --user start trackpad-gestures.service")
 end)
 
--- Resizer listener
-hl.on("window.title", function(win)
-    local d = {
+-- Resizer listeners
+local function apply_resizer_rules(win)
+    local float_center = {
         hl.dsp.window.float({ action = "on", window = win }),
         hl.dsp.window.center({ window = win }),
     }
-    local pip = fn.move_actions(win) or {}
+    local pip_actions = fn.move_actions(win) or {}
 
-    fn.resizer(win, "Bitwarden", 20, 54, d, true)
-    fn.resizer(win, "Picture[- ]in[- ][Pp]icture", 0, 0, pip, false)
-end)
+    -- Bitwarden
+    fn.resizer(win, "Bitwarden", 20, 54, float_center, true, "class")                                       -- Native app
+    fn.resizer(win, "^Extension: %(Bitwarden Password Manager%) %- Bitwarden", 20, 54, float_center, false) -- Firefox
+    fn.resizer(win, "nngceckbapebfimnlniiiahkandclblb", 20, 54, float_center, true, "class")                -- Chromium
 
-hl.on("window.open", function(win)
-    local d = {
-        hl.dsp.window.float({ action = "on", window = win }),
-        hl.dsp.window.center({ window = win }),
-    }
-    local pip = fn.move_actions(win) or {}
+    -- Picture in picture
+    fn.resizer(win, "Picture[- ]in[- ][Pp]icture", 0, 0, pip_actions, false)
+end
 
-    fn.resizer(win, "Bitwarden", 20, 54, d, true)
-    fn.resizer(win, "Picture[- ]in[- ][Pp]icture", 0, 0, pip, false)
-end)
+hl.on("window.title", apply_resizer_rules)
+hl.on("window.open", apply_resizer_rules)

@@ -22,6 +22,9 @@ hl.env("XDG_SESSION_DESKTOP", "Hyprland")
 -- Screenshots
 hl.env("CAELESTIA_SCREENSHOTS_DIR", os.getenv("HOME") .. "/Imágenes/Screenshots")
 
+-- Recordings
+hl.env("CAELESTIA_RECORDINGS_DIR", os.getenv("HOME") .. "/Vídeos/Recordings")
+
 -- Intel Arc Xe2 / Lunar Lake
 hl.env("DXVK_ASYNC", "1")
 hl.env("ANV_ALLOW_GPL", "true")
