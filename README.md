@@ -2,18 +2,22 @@
 
 A dots-file for Hyprland with Quickshell, based on [Caelestia](https://github.com/caelestia-dots/shell).
 
-> Personalización overlay sobre caelestia-shell v2.3.0.
+> Personalización overlay sobre caelestia-shell v2.5.0 / dots rev d459e91 (ver `shell.lock`).
 > Inspirado por [end-4/dots-hyprland](https://github.com/end-4/dots-hyprland)
 > e [ilyamiro/nixos-configuration](https://github.com/ilyamiro/nixos-configuration).
 
 ## Estructura
 
+Regla: solo archivos propios en `home/` y `system/`. Lo modificado de upstream vive en `fork/` hasta migrarse al fork. Detalle en `docs/OWNERSHIP.md`.
+
 ```
 Cae-Mod/
-├── config/          Dotfiles planos (sin sudo)
-├── patches/         Archivos que van en /etc/ (requieren sudo)
-├── scripts/         Scripts de deploy y utilidades
-└── docs/            Documentación
+├── home/            Solo propio → $HOME (bezel, caelestia/shell.json, fish, quickshell/overview, systemd, wireplumber)
+├── system/          Solo propio → /etc, /lib/firmware (requiere sudo: sddm, keyd, asusd, modprobe.d, firmware, pipewire)
+├── fork/            Upstream modificado (NO es propio): shell/ → Brimx/shell branch cae-mod, dots-hypr/ → hooks hypr-user.lua
+├── scripts/         Scripts de deploy y utilidades (propios → ~/.local/bin)
+├── docs/            Documentación (OWNERSHIP.md)
+└── shell.lock       Pin de versiones upstream
 ```
 
 ## Deploy
@@ -28,14 +32,17 @@ cd Cae-Mod
 
 ```fish
 caelestia update        # actualiza caelestia-shell (no existe "upgrade")
+# actualizar shell.lock: dots_rev desde ~/.local/state/caelestia/dots-state.json, shell_pkg desde pacman -Q caelestia-shell
 git pull                # trae los últimos cambios de Cae-Mod
-./scripts/apply.fish    # re-aplica configs y patches
+./scripts/apply.fish    # re-aplica home/ + system/ + fork/
 ```
 
-> ⚠️ Los patches de `patches/` son version-específicos. Si el release nuevo de
-> caelestia cambia la estructura de los QML, los patches pueden romper el shell.
+> ⚠️ `fork/` es version-específico. Si el release nuevo de
+> caelestia cambia la estructura de los QML, los archivos pueden romper el shell.
 > Tras cada `caelestia update`, verifica que el shell arranca sin errores
 > (`qs -c caelestia -n -d`) y revisa los diffs antes de re-aplicar.
+> Objetivo: mover `fork/shell/` a `Brimx/shell` branch `cae-mod` y `fork/dots-hypr/`
+> a `hypr-user.lua`/`hypr-vars.lua` (ver `fork/README.md`).
 
 ## Qué incluye
 

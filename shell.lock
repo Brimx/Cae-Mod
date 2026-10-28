@@ -1,0 +1,22 @@
+# Pin de versiones upstream (actualizar en cada `caelestia update`)
+# Generado: 2026-10-07
+
+[upstream]
+dots_repo = "https://github.com/caelestia-dots/caelestia"
+dots_rev = "d459e9182ae55ba7eb29fa90781297224911d6bd"
+shell_repo = "https://github.com/caelestia-dots/shell"
+shell_pkg = "2.5.0-1"
+cli_pkg = "1.1.3-1"
+
+# Fork propio (crear cuando se migre fork/shell):
+# fork_shell_repo = "https://github.com/Brimx/shell"
+# fork_shell_branch = "cae-mod"
+# fork_shell_base = "<commit de shell 2.5.0>"
+
+[vendor.clip-picker]
+repo = "https://github.com/riadloukili/dotfiles"
+path = "clip-picker"
+rev = "d25ba9404a293e373efaa12dfcbabaff4f9c70c0"
+date = "2026-10-05T15:26:04Z"
+status = "ported into fork/shell/modules/clipboard/ (drawer Caelestia, tokens propios). Standalone eliminado."
+note = "Backup del drawer simple anterior en fork/shell/modules.clipboard-simple-backup/ (no se deploya). fzf.js del port incluye 2 fixes Qt (trimLeft/trimRight, defaultOpts) que también benefician a emoji."
