@@ -1,0 +1,12 @@
+[Unit]
+Description=Trackpad gestures unificado (bordes slide + taps)
+After=graphical-session.target suspend.target
+PartOf=graphical-session.target
+
+[Service]
+ExecStart=%h/.local/bin/trackpad-gestures.py
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=graphical-session.target

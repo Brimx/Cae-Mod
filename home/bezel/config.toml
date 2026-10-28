@@ -1,0 +1,66 @@
+# Bezel — edge gestures (reemplaza scripts/trackpad-edges.py para bordes).
+# Migrado 2026-09-30. Zonas angostas (5% vs 8% default) para evitar
+# disparos accidentales con la palma / roces horizontales.
+# Ver: "Cachy OS/Atajos Caelestia.md" sección Gestos touchpad — bezel.
+# Rutas absolutas a propósito: el servicio systemd tiene PATH mínimo
+# (el viejo daemon fallaba con playerctl por esto mismo).
+
+[zones]
+left_width = 0.05
+right_width = 0.05
+top_height = 0.05
+bottom_height = 0.05
+
+# Borde izquierdo: volumen (con cap 100% como el fix del .py)
+[gestures.left.up]
+action = "command"
+cmd = "/usr/bin/wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"
+
+[gestures.left.down]
+action = "command"
+cmd = "/usr/bin/wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%-"
+
+[gestures.left.tap]
+action = "command"
+cmd = "/usr/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+
+# Borde derecho: brillo vía IPC caelestia (sidebar/OSD sync), fallback brightnessctl
+[gestures.right.up]
+action = "command"
+cmd = "/usr/bin/qs ipc -c caelestia call brightness setFor active +5% || /usr/bin/brightnessctl s 5%+"
+
+[gestures.right.down]
+action = "command"
+cmd = "/usr/bin/qs ipc -c caelestia call brightness setFor active 5%- || /usr/bin/brightnessctl s 5%-"
+
+# Borde superior: seek media ±5s (igual que el .py)
+[gestures.top.left]
+action = "command"
+cmd = "/usr/bin/playerctl position -5"
+
+[gestures.top.right]
+action = "command"
+cmd = "/usr/bin/playerctl position +5"
+
+[gestures.top.tap]
+action = "command"
+cmd = "/usr/bin/qs ipc -c overview call overview toggle"
+
+# Borde inferior (NUEVO, el .py no lo tenía): media prev/next + play-pause.
+# El tap acá reemplaza ergonómicamente el tap 4-dedos simultáneo.
+[gestures.bottom.left]
+action = "command"
+cmd = "/usr/bin/playerctl previous"
+
+[gestures.bottom.right]
+action = "command"
+cmd = "/usr/bin/playerctl next"
+
+[gestures.bottom.tap]
+action = "command"
+cmd = "/usr/bin/playerctl play-pause"
+
+[osd]
+enabled = false
+backend = "notify-send"
+canonical_hints = false
