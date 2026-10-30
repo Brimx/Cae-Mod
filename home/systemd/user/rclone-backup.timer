@@ -1,0 +1,11 @@
+[Unit]
+Description=Ejecuta rclone-backup diariamente
+
+[Timer]
+OnCalendar=daily
+# Si el equipo estaba apagado a la hora programada, corre al arrancar.
+Persistent=true
+RandomizedDelaySec=15m
+
+[Install]
+WantedBy=timers.target

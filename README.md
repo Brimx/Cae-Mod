@@ -15,7 +15,7 @@ Cae-Mod/
 ├── home/            Solo propio → $HOME (bezel, caelestia/shell.json, fish, quickshell/overview, systemd, wireplumber)
 ├── system/          Solo propio → /etc, /lib/firmware (requiere sudo: sddm, keyd, asusd, modprobe.d, firmware, pipewire)
 ├── fork/            Upstream modificado (NO es propio): shell/ → Brimx/shell branch cae-mod, dots-hypr/ → hooks hypr-user.lua
-├── scripts/         Scripts de deploy y utilidades (propios → ~/.local/bin)
+├── scripts/         Scripts de deploy y utilidades (propios → ~/.local/bin), incl. rclone-backup.sh
 ├── docs/            Documentación (OWNERSHIP.md)
 └── shell.lock       Pin de versiones upstream
 ```
@@ -52,7 +52,7 @@ git pull                # trae los últimos cambios de Cae-Mod
 - **keyd**: Fix para tecla backslash dañada por sulfatación
 - **Trackpad edges**: Gestos en bordes (volumen, brillo, seek media)
 - **KB Layout**: Switcher US/Latam con SUPER + SPACE
-- **OCR**: Screenshot + reconocimiento de texto con tesseract
+- **Drive (rclone)**: mount de Google Drive **bajo demanda** en `~/Drive` (`rclone-drive on|off|status`, `vfs-cache-mode writes`, 10G) + backup diario de carpetas de usuario a `Santi:Backup/` (timer systemd, `rclone copy` unidireccional, `--bwlimit 3M` para no bloquear el explorador). Configuración y control con el menú `rclone-sync` (`~/.config/rclone-backup/config`)
 - **Intel Arc Xe2**: Variables de entorno DXVK_ASYNC y ANV_ALLOW_GPL
 - **GPU fix (xe driver)**: Utilización de GPU via fdinfo para Intel Arc B580/Battlemage (driver xe)
 - **Cursor**: Vimix cursors

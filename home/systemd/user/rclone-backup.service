@@ -1,0 +1,18 @@
+[Unit]
+Description=Backup de carpetas de usuario a Santi:Backup (rclone copy)
+Documentation=https://rclone.org/commands/rclone_copy/
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/rclone-backup.sh
+# No competir con el uso interactivo del equipo: CPU e IO de baja prioridad y
+# techo de RAM. Cada transfer lleva buffer de 16M y, si el archivo es grande, un
+# chunk de 128M; con 8 transfers el peor caso son ~1.2G. 2G deja aire y corta en
+# seco una fuga en vez de dejar que empuje el escritorio a swap.
+Nice=19
+IOSchedulingClass=idle
+IOWeight=10
+CPUWeight=20
+MemoryMax=2G

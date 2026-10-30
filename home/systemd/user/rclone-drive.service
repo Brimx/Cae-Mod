@@ -1,0 +1,38 @@
+[Unit]
+Description=Mount Google Drive (Santi) at ~/Drive via rclone
+Documentation=https://rclone.org/commands/rclone_mount/
+# NO se habilita al login: se arranca bajo demanda con `rclone-drive on`.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+Environment=RCLONE_CONFIG=%h/.config/rclone/rclone.conf
+# --vfs-cache-mode writes: evita que Thunar (y cualquier app que abra/guarde
+# archivos con rename o escritura no secuencial) falle con I/O error.
+# La caché vive en ~/.cache/rclone y se limita a 10G.
+ExecStart=/usr/bin/rclone mount Santi: %h/Drive \
+  --vfs-cache-mode writes \
+  --vfs-cache-max-size 10G \
+  --vfs-cache-max-age 24h \
+  --vfs-write-back 5s \
+  --dir-cache-time 1h \
+  --poll-interval 5m \
+  --drive-pacer-min-sleep 50ms \
+  --timeout 30s \
+  --contimeout 15s \
+  --low-level-retries 3 \
+  --umask 022
+# Desmonta sin matar procesos que tengan archivos abiertos. El `|| true` evita
+# que un desmontaje ya hecho (o un mount que nunca llegó a subir) marque la
+# unidad como fallida y bloquee el siguiente arranque.
+ExecStop=/bin/sh -c 'fusermount3 -uz %h/Drive || true'
+Restart=on-failure
+RestartSec=60
+# Si Drive responde 403 RATE_LIMIT_EXCEEDED, reintentar rápido solo gasta
+# cuota: se espera 60s entre intentos.
+
+[Install]
+# Presente solo para permitir `systemctl --user enable` manual; el deploy NO lo
+# habilita. Se usa a través de scripts/rclone-drive.sh (on/off/status).
+WantedBy=default.target

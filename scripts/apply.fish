@@ -48,6 +48,28 @@ for s in bezel taps-center trackpad-edges
 end
 systemctl --user enable --now trackpad-gestures.service audio-inhibit.service monitor-watch.service
 
+# rclone: disco virtual bajo demanda (Santi: -> ~/Drive) + backup diario a Santi:Backup
+cp $REPO_DIR/home/systemd/user/rclone-drive.service ~/.config/systemd/user/rclone-drive.service
+cp $REPO_DIR/home/systemd/user/rclone-backup.service ~/.config/systemd/user/rclone-backup.service
+cp $REPO_DIR/home/systemd/user/rclone-backup.timer ~/.config/systemd/user/rclone-backup.timer
+mkdir -p ~/Drive
+# Config del backup: no pisar la del usuario si ya existe
+mkdir -p ~/.config/rclone-backup
+if not test -f ~/.config/rclone-backup/config
+    cp $REPO_DIR/home/rclone-backup/config ~/.config/rclone-backup/config
+end
+systemctl --user daemon-reload
+# Mount bajo demanda (no al login): se usa con `rclone-drive on|off|status`.
+# Mantenerlo montado hace que Thunar se bloquee al abrir el bookmark, porque
+# listar carpetas grandes de Drive puede tardar >30 s.
+systemctl --user disable rclone-drive.service; or true
+systemctl --user enable rclone-backup.timer
+# Bookmark de Thunar/GTK (idempotente)
+for gtk in gtk-3.0 gtk-4.0
+    mkdir -p ~/.config/$gtk
+    grep -qxF "file://$HOME/Drive" ~/.config/$gtk/bookmarks 2>/dev/null; or echo "file://$HOME/Drive" >> ~/.config/$gtk/bookmarks
+end
+
 # Audio (WirePlumber: anti-stutter + auto-switch jack, propio)
 mkdir -p ~/.config/wireplumber/wireplumber.conf.d
 cp $REPO_DIR/home/wireplumber/wireplumber.conf.d/*.conf ~/.config/wireplumber/wireplumber.conf.d/
@@ -66,6 +88,12 @@ cp $REPO_DIR/scripts/clipboard-actions.sh ~/.local/bin/clipboard-actions.sh
 cp $REPO_DIR/scripts/emoji-actions.sh ~/.local/bin/emoji-actions.sh
 cp $REPO_DIR/scripts/build-emoji-json.py ~/.local/bin/build-emoji-json.py
 cp $REPO_DIR/scripts/ocr.sh ~/.local/bin/ocr.sh
+cp $REPO_DIR/scripts/rclone-backup.sh ~/.local/bin/rclone-backup.sh
+chmod 755 ~/.local/bin/rclone-backup.sh
+cp $REPO_DIR/scripts/rclone-drive.sh ~/.local/bin/rclone-drive
+chmod 755 ~/.local/bin/rclone-drive
+cp $REPO_DIR/scripts/rclone-backup-tui.sh ~/.local/bin/rclone-sync
+chmod 755 ~/.local/bin/rclone-sync
 # Regenera el JSON categorizado (best-effort: sin red conserva el existente)
 python3 ~/.local/bin/build-emoji-json.py; or true
 

@@ -1,0 +1,7 @@
+# Configuración del backup de rclone.
+# Se edita a mano o con `rclone-sync` (menú de terminal).
+# Los valores de abajo son los defaults; el deploy NO sobrescribe este archivo.
+BACKUP_REMOTE="Santi:Backup"
+# Tabla por franjas, hora local: 4M de 08:00 a 00:00, sin tope de 00:00 a 08:00.
+BACKUP_BWLIMIT="08:00,4M 00:00,off"
+BACKUP_DIRS="Documentos Imágenes Música Vídeos Videos Escritorio Plantillas Público"
