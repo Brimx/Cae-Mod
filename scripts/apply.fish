@@ -6,23 +6,18 @@ set REPO_DIR (dirname (status dirname))
 
 echo "Deploying configs..."
 
-# Hyprland (fork de caelestia-dots/caelestia rev d459e91 — migrar a hypr-user.lua/hypr-vars.lua)
+# Hyprland (fork de caelestia-dots/caelestia rev d4c24f8 — migrar a hypr-user.lua/hypr-vars.lua)
+# Solo se copian archivos con delta propio. animations/decoration/general/group/misc/
+# utils/{functions,json} los gestiona upstream sin tocar (ver fork/README.md).
 cp $REPO_DIR/fork/dots-hypr/hyprland.lua ~/.config/hypr/hyprland.lua
 cp $REPO_DIR/fork/dots-hypr/variables.lua ~/.config/hypr/variables.lua
-cp $REPO_DIR/fork/dots-hypr/animations.lua ~/.config/hypr/hyprland/animations.lua
-cp $REPO_DIR/fork/dots-hypr/decoration.lua ~/.config/hypr/hyprland/decoration.lua
 cp $REPO_DIR/fork/dots-hypr/env.lua ~/.config/hypr/hyprland/env.lua
 cp $REPO_DIR/fork/dots-hypr/execs.lua ~/.config/hypr/hyprland/execs.lua
-cp $REPO_DIR/fork/dots-hypr/general.lua ~/.config/hypr/hyprland/general.lua
 cp $REPO_DIR/fork/dots-hypr/gestures.lua ~/.config/hypr/hyprland/gestures.lua
-cp $REPO_DIR/fork/dots-hypr/group.lua ~/.config/hypr/hyprland/group.lua
 cp $REPO_DIR/fork/dots-hypr/input.lua ~/.config/hypr/hyprland/input.lua
 cp $REPO_DIR/fork/dots-hypr/keybinds.lua ~/.config/hypr/hyprland/keybinds.lua
-cp $REPO_DIR/fork/dots-hypr/misc.lua ~/.config/hypr/hyprland/misc.lua
 cp $REPO_DIR/fork/dots-hypr/monitors.lua ~/.config/hypr/hyprland/monitors.lua
 cp $REPO_DIR/fork/dots-hypr/rules.lua ~/.config/hypr/hyprland/rules.lua
-cp $REPO_DIR/fork/dots-hypr/utils/functions.lua ~/.config/hypr/utils/functions.lua
-cp $REPO_DIR/fork/dots-hypr/utils/json.lua ~/.config/hypr/utils/json.lua
 
 # Limpieza de strays legacy (nwg-displays, Nothing shell, hyprmoncfg, backups)
 rm -f ~/.config/hypr/monitors.lua ~/.config/hypr/monitors.conf ~/.config/hypr/displays.lua ~/.config/hypr/accent.lua ~/.config/hypr/layout.lua ~/.config/hypr/workspaces.conf ~/.config/hypr/hyprmoncfg-monitors.lua ~/.config/hypr/variables.lua.new ~/.config/hypr/hyprland/*.new
@@ -131,10 +126,8 @@ sudo cp $REPO_DIR/fork/shell/modules/clipboard/scripts/fzf.js /etc/xdg/quickshel
 sudo cp $REPO_DIR/fork/shell/modules/bar/popouts/BatteryConservation.qml /etc/xdg/quickshell/caelestia/modules/bar/popouts/BatteryConservation.qml
 sudo cp $REPO_DIR/fork/shell/modules/bar/popouts/Battery.qml /etc/xdg/quickshell/caelestia/modules/bar/popouts/Battery.qml
 sudo cp $REPO_DIR/fork/shell/modules/dashboard/dash/Media.qml /etc/xdg/quickshell/caelestia/modules/dashboard/dash/Media.qml
-sudo cp $REPO_DIR/fork/shell/modules/dashboard/Media.qml /etc/xdg/quickshell/caelestia/modules/dashboard/Media.qml
 sudo cp $REPO_DIR/fork/shell/modules/dashboard/media/CoverVisualiser.qml /etc/xdg/quickshell/caelestia/modules/dashboard/media/CoverVisualiser.qml
 sudo cp $REPO_DIR/fork/shell/modules/dashboard/media/Details.qml /etc/xdg/quickshell/caelestia/modules/dashboard/media/Details.qml
-sudo cp $REPO_DIR/fork/shell/modules/dashboard/media/LyricsAndSelector.qml /etc/xdg/quickshell/caelestia/modules/dashboard/media/LyricsAndSelector.qml
 sudo cp $REPO_DIR/fork/shell/services/Players.qml /etc/xdg/quickshell/caelestia/services/Players.qml
 sudo cp $REPO_DIR/fork/shell/components/images/FadeImage.qml /etc/xdg/quickshell/caelestia/components/images/FadeImage.qml
 sudo cp $REPO_DIR/fork/shell/components/widgets/CoverArt.qml /etc/xdg/quickshell/caelestia/components/widgets/CoverArt.qml

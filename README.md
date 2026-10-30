@@ -2,7 +2,7 @@
 
 A dots-file for Hyprland with Quickshell, based on [Caelestia](https://github.com/caelestia-dots/shell).
 
-> Personalización overlay sobre caelestia-shell v2.5.0 / dots rev d459e91 (ver `shell.lock`).
+> Personalización overlay sobre caelestia-shell v2.5.0 / dots rev d4c24f8 (ver `shell.lock`).
 > Inspirado por [end-4/dots-hyprland](https://github.com/end-4/dots-hyprland)
 > e [ilyamiro/nixos-configuration](https://github.com/ilyamiro/nixos-configuration).
 

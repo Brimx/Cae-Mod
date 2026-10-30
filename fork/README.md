@@ -19,10 +19,8 @@ modules/drawers/ContentWindow.qml
 modules/drawers/Regions.qml
 modules/bar/popouts/Battery.qml
 modules/dashboard/dash/Media.qml
-modules/dashboard/Media.qml
 modules/dashboard/media/CoverVisualiser.qml
 modules/dashboard/media/Details.qml
-modules/dashboard/media/LyricsAndSelector.qml
 modules/lock/Media.qml
 services/Players.qml
 ```
@@ -31,6 +29,17 @@ Migración: 1 commit por feature con prefijo `cae:`, ej:
 `cae: battery conservation toggle`, `cae: media cover art`, `cae: clipboard drawer`.
 Verificar cada uno con `diff` contra `/etc/xdg/quickshell/caelestia/<mismo path>`
 antes de commitear al fork (ese path hoy ya tiene tus patches aplicados).
+
+Notas de rebase (2026-10-30):
+
+- `dashboard/Media.qml` y `dashboard/media/LyricsAndSelector.qml` eran idénticos a
+  upstream 2.5.0 (sin delta propio): **quitados del fork** el 2026-10-30.
+- `modules/Shortcuts.qml` (parche clipboard/emoji/sidebar) upstream `main` lo movió a
+  `daemons/Shortcuts.qml` (commit `29794ec`); al salir la próxima release hay que
+  re-aplicar el parche en la ruta nueva.
+- Del resto, upstream `main` solo cambió 4 archivos de esta lista
+  (`ContentWindow`, `dashboard/dash/Media`, `media/CoverVisualiser`, `lock/Media`)
+  y los mergea limpio (verificado con `git merge-file` contra `v2.5.0`).
 
 ### Archivos NUEVOS (no existen upstream, eventualmente propios)
 
@@ -54,17 +63,33 @@ exponga punto de extensión.
 
 ## fork/dots-hypr/ → hooks en `home/caelestia/`
 
-Base: `caelestia-dots/caelestia` rev `d459e91` (ver `../shell.lock`).
-`hyprland.lua`, `variables.lua`, `hyprland/*.lua`, `utils/*` son copias de
-`~/.local/state/caelestia/dots/hypr/`.
+Base: `caelestia-dots/caelestia` rev `d4c24f8` (rebasado 2026-10-30; ver `../shell.lock`).
+Cada archivo es upstream-base + delta propio (verificado con `git merge-file`).
+
+Archivos con delta propio (9):
+```
+hyprland.lua      → require("hyprland.monitors") + quita monitor default
+variables.lua     → editor code, gaps, Vimix-cursors, kbOcr, kbOverview
+execs.lua         → qs -c overview, trackpad-gestures (resto = upstream)
+keybinds.lua      → SUPER+SPACE layout, SUPER+TAB overview, SUPER+G, clipboard/emoji drawers
+rules.lua         → idle_inhibit (stremio/firefox/calls/wine), nmtui, steam rounding, game_tag
+env.lua           → CAELESTIA_*_DIR, DXVK_ASYNC, ANV_ALLOW_GPL
+input.lua         → kb_layout us,latam + taps/tap_button_map + hl.device overrides
+gestures.lua      → 3 dedos media (prev/next) y mute en vez de suspend
+monitors.lua      → nuevo (upstream no lo tiene)
+```
+
+Ya **no** se copian (sin delta propio, los gestiona upstream):
+`animations.lua`, `decoration.lua`, `general.lua`, `group.lua`, `misc.lua`,
+`utils/functions.lua`, `utils/json.lua`. Tenían copias obsoletas (jun–jul 2026)
+que al re-aplicarse retrocedían fixes de upstream (p.ej. el resizer de `functions.lua`).
 
 Objetivo: vaciar este dir migrando tus deltas a los hooks oficiales:
 - `~/.config/caelestia/hypr-vars.lua` (`return { ... }`, override de `variables.lua`)
 - `~/.config/caelestia/hypr-user.lua` (requires extra, keybinds, reglas)
 
-Excepción: `monitors.lua` es nuevo tuyo (upstream no lo tiene) → pasará a
-`home/caelestia/hypr-user.lua` o a `home/hypr/` cuando se complete la migración.
-`hyprland.lua` solo difiere en `require("hyprland.monitors")` (línea 61).
+Excepción: `monitors.lua` es nuevo tuyo → pasará a `home/caelestia/hypr-user.lua`
+o a `home/hypr/` cuando se complete la migración.
 
 ## Workflow de update
 

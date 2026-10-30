@@ -38,5 +38,6 @@ configs de servicio, no código versionado.
   Deploy actual a `/etc/xdg/quickshell/caelestia/` vía sudo (frágil, sobrevive
   hasta crear `Brimx/shell` y clonar a `~/.config/quickshell/caelestia/` que
   tiene precedencia XDG).
-- `fork/dots-hypr/`: 16 lua de `caelestia-dots/caelestia`. Migrar a
-  `home/caelestia/hypr-user.lua` + `hypr-vars.lua` y eliminar.
+- `fork/dots-hypr/`: 9 lua con delta propio (base `caelestia-dots/caelestia`
+  rev `d4c24f8`). Migrar a `home/caelestia/hypr-user.lua` + `hypr-vars.lua` y
+  eliminar. El resto de `hypr/*.lua` lo gestiona upstream (no se copia).

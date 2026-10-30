@@ -1,10 +1,12 @@
 # Pin de versiones upstream (actualizar en cada `caelestia update`)
-# Generado: 2026-10-07
+# Generado: 2026-10-07 — actualizado: 2026-10-30
 
 [upstream]
 dots_repo = "https://github.com/caelestia-dots/caelestia"
-dots_rev = "d459e9182ae55ba7eb29fa90781297224911d6bd"
+# Base del fork/dots-hypr (rebasado 2026-10-30). Rev anterior: d459e91 (pin viejo), f4bb062 (desplegado).
+dots_rev = "d4c24f8635266c2e3db8c761c740dea4d40376a6"
 shell_repo = "https://github.com/caelestia-dots/shell"
+# Última release instalable. `main` ya trae 52 commits sin release (Shortcuts.qml → daemons/).
 shell_pkg = "2.5.0-1"
 cli_pkg = "1.1.3-1"
 
