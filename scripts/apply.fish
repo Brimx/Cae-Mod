@@ -26,7 +26,19 @@ rm -f ~/.config/hypr/monitors.lua ~/.config/hypr/monitors.conf ~/.config/hypr/di
 cp $REPO_DIR/home/caelestia/shell.json ~/.config/caelestia/shell.json
 
 # Fish (copia upstream + paths — migrar a ~/.config/caelestia/user-config.fish)
+# Blindaje (2026-10-30): este cp pisaba el config.fish del usuario sin backup y
+# borró funciones propias (cc-usage). Ahora: backup fechado si difiere, y las
+# funciones propias viven en home/fish/functions/ (autoload; solo se copian).
+if test -f ~/.config/fish/config.fish; and not cmp -s $REPO_DIR/home/fish/config.fish ~/.config/fish/config.fish
+    set -l bak ~/.config/fish/config.fish.bak.(date +%Y%m%d-%H%M%S)
+    cp ~/.config/fish/config.fish $bak
+    echo "Backup de config.fish -> $bak"
+end
 cp $REPO_DIR/home/fish/config.fish ~/.config/fish/config.fish
+
+# Funciones propias de fish (autoload desde ~/.config/fish/functions/)
+mkdir -p ~/.config/fish/functions
+cp -rf $REPO_DIR/home/fish/functions/. ~/.config/fish/functions/
 
 # Systemd user (propio)
 cp $REPO_DIR/home/systemd/user/trackpad-gestures.service ~/.config/systemd/user/trackpad-gestures.service
