@@ -12,6 +12,11 @@ PLATFORM=${PLATFORM:-/sys/firmware/acpi/platform_profile}
 POWER_SUPPLY=${POWER_SUPPLY:-/sys/class/power_supply}
 EPP_GLOB=${EPP_GLOB:-/sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference}
 DEBOUNCE=${DEBOUNCE:-2}
+# Perfil por fuente. ppd sigue siendo el dueno: aqui solo se le pide por D-Bus
+# el perfil que corresponde a AC/bateria. SWITCH_PROFILE=0 respeta la eleccion manual.
+SWITCH_PROFILE=${SWITCH_PROFILE:-1}
+PROFILE_AC=${PROFILE_AC:-performance}
+PROFILE_BAT=${PROFILE_BAT:-power-saver}
 
 log() { logger -t asus-turbo-guard "$*"; }
 
@@ -55,10 +60,29 @@ on_ac() {
     return 1
 }
 
+set_profile() {
+    [ "$SWITCH_PROFILE" = 1 ] || return 0
+    [ "$1" = "$prof" ] && return 0
+    if busctl set-property net.hadess.PowerProfiles /net/hadess/PowerProfiles \
+        net.hadess.PowerProfiles ActiveProfile s "$1" 2>/dev/null; then
+        log "perfil $prof -> $1 (fuente ac=$ac)"
+        prof=$1
+    else
+        log "no se pudo pedir el perfil $1 a ppd"
+    fi
+}
+
 last=
+last_ac=
 apply() {
     prof=$(profile)
     if on_ac; then ac=1; else ac=0; fi
+    # Solo en transiciones de fuente (enchufar/desenchufar): asi no se pisa la
+    # eleccion manual del perfil mientras la fuente no cambie.
+    if [ "$ac" != "$last_ac" ]; then
+        if [ "$ac" = 1 ]; then set_profile "$PROFILE_AC"; else set_profile "$PROFILE_BAT"; fi
+        last_ac=$ac
+    fi
     state="ac=$ac perfil=$prof"
 
     if [ "$ac" = 0 ] && is_low "$prof"; then want=1; else want=0; fi
@@ -90,13 +114,27 @@ fi
 
 fifo=$(mktemp -u /tmp/asus-turbo-guard.XXXXXX)
 mkfifo "$fifo" || exit 1
-trap 'rm -f "$fifo"' EXIT INT TERM
+mon_pids=
+
+# Salida limpia: matar los monitores (udevadm ignora SIGTERM, hay que forzarlo) y
+# salir. Sin el exit explicito, SIGTERM deja el read bloqueado y systemd espera 90 s.
+cleanup() {
+    trap - EXIT INT TERM
+    for p in $mon_pids; do kill -TERM "$p" 2>/dev/null; done
+    sleep 1
+    for p in $mon_pids; do kill -KILL "$p" 2>/dev/null; done
+    rm -f "$fifo"
+    exit 0
+}
+trap cleanup EXIT INT TERM
 
 # Estado inicial (arranque / reinicio del servicio)
 apply
 
 busctl monitor net.hadess.PowerProfiles --json=short >"$fifo" 2>/dev/null &
+mon_pids="$mon_pids $!"
 udevadm monitor --subsystem-match=power_supply --udev >"$fifo" 2>/dev/null &
+mon_pids="$mon_pids $!"
 
 while read -r _; do
     sleep "$DEBOUNCE"

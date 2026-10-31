@@ -1,6 +1,9 @@
 [Unit]
 Description=Desactiva turbo boost cuando el perfil de energia es el de ahorro
-After=power-profiles-daemon.service asusd.service
+# Sin After=power-profiles-daemon.service: ppd va After=multi-user.target y este
+# unit es WantedBy=multi-user.target, lo que crea un ciclo de ordenacion y systemd
+# borra el job. El guard lee el perfil por D-Bus en caliente; no necesita orden.
+After=asusd.service
 Wants=power-profiles-daemon.service
 
 [Service]
