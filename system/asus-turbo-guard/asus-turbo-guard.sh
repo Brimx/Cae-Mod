@@ -4,7 +4,8 @@
 #   (udev, power_supply). Reafirma las palancas que asusd pisa al cambiar de perfil:
 #     no_turbo: 1 solo con bateria Y perfil de ahorro
 #     EPP:      power / balance_power / performance segun perfil
-#   El valor queda persistido en el kernel hasta el siguiente evento.
+#   El valor queda persistido en el kernel hasta el siguiente evento; ademas un tick
+#   lento (SAFETY_INTERVAL) reafirma por si un tercero lo pisa sin avisar.
 set -u
 
 NO_TURBO=${NO_TURBO:-/sys/devices/system/cpu/intel_pstate/no_turbo}
@@ -12,6 +13,10 @@ PLATFORM=${PLATFORM:-/sys/firmware/acpi/platform_profile}
 POWER_SUPPLY=${POWER_SUPPLY:-/sys/class/power_supply}
 EPP_GLOB=${EPP_GLOB:-/sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference}
 DEBOUNCE=${DEBOUNCE:-2}
+# Reafirmacion periodica de seguridad, en segundos. No es sondeo por evento: existe
+# porque el estado (EPP/no_turbo) puede quedar pisado en silencio por un tercero sin
+# emitir ninguna senal. 0 lo desactiva.
+SAFETY_INTERVAL=${SAFETY_INTERVAL:-30}
 # Perfil por fuente. ppd sigue siendo el dueno: aqui solo se le pide por D-Bus
 # el perfil que corresponde a AC/bateria. SWITCH_PROFILE=0 respeta la eleccion manual.
 SWITCH_PROFILE=${SWITCH_PROFILE:-1}
@@ -131,10 +136,19 @@ trap cleanup EXIT INT TERM
 # Estado inicial (arranque / reinicio del servicio)
 apply
 
-busctl monitor net.hadess.PowerProfiles --json=short >"$fifo" 2>/dev/null &
+# Solo las SENALES de ppd. `busctl monitor <servicio>` a secas es una trampa: como el
+# servicio corre como root, se lleva el bus ENTERO (eavesdrop) y ademas reentra con sus
+# propias consultas, asi que el fifo acumula decenas de miles de eventos (medido: 4,3%
+# de lo capturado tenia que ver con ppd) y el guard quema ~2% de un core de forma
+# permanente. El --match acota la suscripcion a lo unico que importa: que cambie el perfil.
+busctl monitor --match='type=signal,interface=net.hadess.PowerProfiles' --json=short >"$fifo" 2>/dev/null &
 mon_pids="$mon_pids $!"
 udevadm monitor --subsystem-match=power_supply --udev >"$fifo" 2>/dev/null &
 mon_pids="$mon_pids $!"
+if [ "$SAFETY_INTERVAL" -gt 0 ]; then
+    ( while :; do sleep "$SAFETY_INTERVAL"; echo tick; done ) >"$fifo" 2>/dev/null &
+    mon_pids="$mon_pids $!"
+fi
 
 while read -r _; do
     sleep "$DEBOUNCE"
