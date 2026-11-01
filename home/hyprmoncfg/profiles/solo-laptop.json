@@ -1,0 +1,51 @@
+{
+  "name": "solo laptop",
+  "created_at": "2026-11-01T20:57:18.257830665Z",
+  "updated_at": "2026-11-01T20:57:18.258234272Z",
+  "outputs": [
+    {
+      "key": "samsung display corp.|0x41a0",
+      "match_key": "samsung display corp.|0x41a0",
+      "name": "eDP-1",
+      "description": "Samsung Display Corp. 0x41A0",
+      "make": "Samsung Display Corp.",
+      "model": "0x41A0",
+      "enabled": true,
+      "mode": "1920x1200@60.00Hz",
+      "width": 1920,
+      "height": 1200,
+      "refresh": 60.003,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "transform": 0,
+      "bitdepth": 8,
+      "cm": "srgb",
+      "sdr_brightness": 1,
+      "sdr_saturation": 1,
+      "sdr_min_luminance": 0.2,
+      "sdr_max_luminance": 80,
+      "min_luminance": 0
+    }
+  ],
+  "workspaces": {
+    "enabled": true,
+    "strategy": "manual",
+    "max_workspaces": 9,
+    "group_size": 3,
+    "monitor_order": [
+      "samsung display corp.|0x41a0"
+    ],
+    "rules": [
+      {
+        "workspace": "f[1]s[false]",
+        "output_key": ""
+      },
+      {
+        "workspace": "w[tv1]s[false]",
+        "output_key": ""
+      }
+    ]
+  },
+  "exec": ""
+}

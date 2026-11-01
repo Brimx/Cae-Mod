@@ -19,8 +19,24 @@ cp $REPO_DIR/fork/dots-hypr/keybinds.lua ~/.config/hypr/hyprland/keybinds.lua
 cp $REPO_DIR/fork/dots-hypr/monitors.lua ~/.config/hypr/hyprland/monitors.lua
 cp $REPO_DIR/fork/dots-hypr/rules.lua ~/.config/hypr/hyprland/rules.lua
 
-# Limpieza de strays legacy (nwg-displays, Nothing shell, hyprmoncfg, backups)
-rm -f ~/.config/hypr/monitors.lua ~/.config/hypr/monitors.conf ~/.config/hypr/displays.lua ~/.config/hypr/accent.lua ~/.config/hypr/layout.lua ~/.config/hypr/workspaces.conf ~/.config/hypr/hyprmoncfg-monitors.lua ~/.config/hypr/variables.lua.new ~/.config/hypr/hyprland/*.new
+# Limpieza de strays legacy (nwg-displays, Nothing shell, backups)
+# OJO: ~/.config/hypr/hyprmoncfg-monitors.lua NO entra aquí: no es un stray, es
+# la salida generada de hyprmoncfg (ver el bloque de hyprmoncfg más abajo).
+rm -f ~/.config/hypr/monitors.lua ~/.config/hypr/monitors.conf ~/.config/hypr/displays.lua ~/.config/hypr/accent.lua ~/.config/hypr/layout.lua ~/.config/hypr/workspaces.conf ~/.config/hypr/variables.lua.new ~/.config/hypr/hyprland/*.new
+
+# hyprmoncfg: dueño de la configuración de monitores (aplica el perfil según el
+# set conectado). El cp de hyprland.lua de arriba borra el include que el daemon
+# añade al final del archivo, así que "manage" tiene que correr DESPUÉS para
+# reponerlo; si no, el daemon deja de aplicar y el perfil queda huérfano.
+# Requisito duro: un perfil por cada set de monitores que se use. Si falta el del
+# panel solo, hyprmoncfg recomienda un perfil a medias (p. ej. "mirror", que
+# exige el proyector) y entra en bucle de apply fallido. Ver OWNERSHIP.md.
+if command -q hyprmoncfg
+    mkdir -p ~/.config/hyprmoncfg/profiles
+    cp -rf $REPO_DIR/home/hyprmoncfg/profiles/. ~/.config/hyprmoncfg/profiles/
+    hyprmoncfg manage
+    systemctl --user enable --now hyprmoncfgd.service
+end
 
 # Caelestia (propio)
 cp $REPO_DIR/home/caelestia/shell.json ~/.config/caelestia/shell.json

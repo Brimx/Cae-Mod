@@ -1,0 +1,126 @@
+{
+  "name": "tv de casa",
+  "created_at": "2026-10-29T02:12:34.383742228Z",
+  "updated_at": "2026-10-29T02:30:12.863836005Z",
+  "outputs": [
+    {
+      "key": "@@@|smart tv|0x00011011",
+      "match_key": "@@@|smart tv|0x00011011",
+      "name": "HDMI-A-1",
+      "description": "@@@ SMART TV 0x00011011",
+      "make": "@@@",
+      "model": "SMART TV",
+      "serial": "0x00011011",
+      "enabled": true,
+      "mode": "1920x1080@59.94Hz",
+      "width": 1920,
+      "height": 1080,
+      "refresh": 59.94,
+      "x": 1920,
+      "y": 0,
+      "scale": 1,
+      "transform": 0,
+      "bitdepth": 8,
+      "cm": "srgb",
+      "sdr_brightness": 1,
+      "sdr_saturation": 1,
+      "sdr_min_luminance": 0.2,
+      "sdr_max_luminance": 80,
+      "min_luminance": 0
+    },
+    {
+      "key": "samsung display corp.|0x41a0",
+      "match_key": "samsung display corp.|0x41a0",
+      "name": "eDP-1",
+      "description": "Samsung Display Corp. 0x41A0",
+      "make": "Samsung Display Corp.",
+      "model": "0x41A0",
+      "enabled": true,
+      "mode": "1920x1200@60.00Hz",
+      "width": 1920,
+      "height": 1200,
+      "refresh": 60,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "transform": 0,
+      "bitdepth": 8,
+      "cm": "srgb",
+      "sdr_brightness": 1,
+      "sdr_saturation": 1,
+      "sdr_min_luminance": 0.2,
+      "sdr_max_luminance": 80,
+      "min_luminance": 0
+    }
+  ],
+  "workspaces": {
+    "enabled": false,
+    "strategy": "interleave",
+    "max_workspaces": 9,
+    "group_size": 3,
+    "monitor_order": [
+      "samsung display corp.|0x41a0",
+      "@@@|smart tv|0x00011011"
+    ],
+    "rules": [
+      {
+        "workspace": "1",
+        "output_key": "samsung display corp.|0x41a0",
+        "output_name": "eDP-1",
+        "default": true,
+        "persistent": true
+      },
+      {
+        "workspace": "2",
+        "output_key": "samsung display corp.|0x41a0",
+        "output_name": "eDP-1"
+      },
+      {
+        "workspace": "3",
+        "output_key": "samsung display corp.|0x41a0",
+        "output_name": "eDP-1"
+      },
+      {
+        "workspace": "4",
+        "output_key": "@@@|smart tv|0x00011011",
+        "output_name": "HDMI-A-1",
+        "default": true,
+        "persistent": true
+      },
+      {
+        "workspace": "5",
+        "output_key": "@@@|smart tv|0x00011011",
+        "output_name": "HDMI-A-1"
+      },
+      {
+        "workspace": "6",
+        "output_key": "@@@|smart tv|0x00011011",
+        "output_name": "HDMI-A-1"
+      },
+      {
+        "workspace": "7",
+        "output_key": "samsung display corp.|0x41a0",
+        "output_name": "eDP-1"
+      },
+      {
+        "workspace": "8",
+        "output_key": "samsung display corp.|0x41a0",
+        "output_name": "eDP-1"
+      },
+      {
+        "workspace": "9",
+        "output_key": "samsung display corp.|0x41a0",
+        "output_name": "eDP-1"
+      },
+      {
+        "workspace": "f[1]s[false]",
+        "output_key": ""
+      },
+      {
+        "workspace": "w[tv1]s[false]",
+        "output_key": ""
+      }
+    ]
+  },
+  "exec": ""
+}

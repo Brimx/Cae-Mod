@@ -1,0 +1,125 @@
+{
+  "name": "Monitor 120hz casa",
+  "created_at": "2026-10-29T01:58:18.523609335Z",
+  "updated_at": "2026-10-29T01:58:18.525256393Z",
+  "outputs": [
+    {
+      "key": "boe|nseovs",
+      "match_key": "boe|nseovs",
+      "name": "DP-1",
+      "description": "BOE NSEOVS",
+      "make": "BOE",
+      "model": "NSEOVS",
+      "enabled": true,
+      "mode": "1920x1080@120.00Hz",
+      "width": 1920,
+      "height": 1080,
+      "refresh": 120,
+      "x": 1920,
+      "y": 60,
+      "scale": 1,
+      "transform": 0,
+      "bitdepth": 8,
+      "cm": "srgb",
+      "sdr_brightness": 1,
+      "sdr_saturation": 1,
+      "sdr_min_luminance": 0.2,
+      "sdr_max_luminance": 80,
+      "min_luminance": 0
+    },
+    {
+      "key": "samsung display corp.|0x41a0",
+      "match_key": "samsung display corp.|0x41a0",
+      "name": "eDP-1",
+      "description": "Samsung Display Corp. 0x41A0",
+      "make": "Samsung Display Corp.",
+      "model": "0x41A0",
+      "enabled": true,
+      "mode": "1920x1200@60.00Hz",
+      "width": 1920,
+      "height": 1200,
+      "refresh": 60,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "transform": 0,
+      "bitdepth": 8,
+      "cm": "srgb",
+      "sdr_brightness": 1,
+      "sdr_saturation": 1,
+      "sdr_min_luminance": 0.2,
+      "sdr_max_luminance": 80,
+      "min_luminance": 0
+    }
+  ],
+  "workspaces": {
+    "enabled": false,
+    "strategy": "manual",
+    "max_workspaces": 9,
+    "group_size": 3,
+    "monitor_order": [
+      "samsung display corp.|0x41a0",
+      "boe|nseovs"
+    ],
+    "rules": [
+      {
+        "workspace": "1",
+        "output_key": "samsung display corp.|0x41a0",
+        "output_name": "eDP-1",
+        "default": true,
+        "persistent": true
+      },
+      {
+        "workspace": "2",
+        "output_key": "samsung display corp.|0x41a0",
+        "output_name": "eDP-1"
+      },
+      {
+        "workspace": "3",
+        "output_key": "samsung display corp.|0x41a0",
+        "output_name": "eDP-1"
+      },
+      {
+        "workspace": "4",
+        "output_key": "boe|nseovs",
+        "output_name": "DP-1",
+        "default": true,
+        "persistent": true
+      },
+      {
+        "workspace": "5",
+        "output_key": "boe|nseovs",
+        "output_name": "DP-1"
+      },
+      {
+        "workspace": "6",
+        "output_key": "boe|nseovs",
+        "output_name": "DP-1"
+      },
+      {
+        "workspace": "7",
+        "output_key": "samsung display corp.|0x41a0",
+        "output_name": "eDP-1"
+      },
+      {
+        "workspace": "8",
+        "output_key": "samsung display corp.|0x41a0",
+        "output_name": "eDP-1"
+      },
+      {
+        "workspace": "9",
+        "output_key": "samsung display corp.|0x41a0",
+        "output_name": "eDP-1"
+      },
+      {
+        "workspace": "f[1]s[false]",
+        "output_key": ""
+      },
+      {
+        "workspace": "w[tv1]s[false]",
+        "output_key": ""
+      }
+    ]
+  },
+  "exec": ""
+}
