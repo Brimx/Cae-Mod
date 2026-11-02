@@ -117,6 +117,8 @@ cp $REPO_DIR/scripts/rclone-drive.sh ~/.local/bin/rclone-drive
 chmod 755 ~/.local/bin/rclone-drive
 cp $REPO_DIR/scripts/rclone-backup-tui.sh ~/.local/bin/rclone-sync
 chmod 755 ~/.local/bin/rclone-sync
+cp $REPO_DIR/scripts/dgit.sh ~/.local/bin/dgit
+chmod 755 ~/.local/bin/dgit
 # Regenera el JSON categorizado (best-effort: sin red conserva el existente)
 python3 ~/.local/bin/build-emoji-json.py; or true
 

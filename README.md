@@ -53,6 +53,7 @@ git pull                # trae los últimos cambios de Cae-Mod
 - **Trackpad edges**: Gestos en bordes (volumen, brillo, seek media)
 - **KB Layout**: Switcher US/Latam con SUPER + SPACE
 - **Drive (rclone)**: mount de Google Drive **bajo demanda** en `~/Drive` (`rclone-drive on|off|status`, `vfs-cache-mode writes`, 10G) + backup diario de carpetas de usuario a `Santi:Backup/` (timer systemd, `rclone copy` unidireccional, `--bwlimit 3M` para no bloquear el explorador). Configuración y control con el menú `rclone-sync` (`~/.config/rclone-backup/config`)
+- **dgit (Sync de repositorios con Drive)**: sincronización selectiva tipo Git hacia `Santi:Proyectos/<Proyecto>` con `rclone`. Detecta raíz del repo, cambios, nuevos y eliminaciones con Git, respeta `.gitignore`, previene subida de binarios (`bin/`, `obj/`), solicita confirmación interactiva antes de transferir y registra trazabilidad en `.drive_sync_info`.
 - **Intel Arc Xe2**: Variables de entorno DXVK_ASYNC y ANV_ALLOW_GPL
 - **GPU fix (xe driver)**: Utilización de GPU via fdinfo para Intel Arc B580/Battlemage (driver xe)
 - **Cursor**: Vimix cursors
